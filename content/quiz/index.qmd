@@ -1,0 +1,320 @@
+---
+title: "Quiz"
+description: "Test your knowledge of Automated Text Recognition with a Kahoot-style multiple-choice quiz."
+toc: false
+---
+
+Test yourself on all sections of this resource. 12 questions — one at a time, with instant feedback.
+
+```{=html}
+<div id="quiz-wrapper">
+
+  <!-- Header: progress + score -->
+  <div id="quiz-header">
+    <div id="progress-bar-outer">
+      <div id="progress-bar-inner" style="width:0%"></div>
+    </div>
+    <span id="q-counter">1 / 12</span>
+    <span id="q-score">Score: 0</span>
+  </div>
+
+  <!-- Question display -->
+  <div id="question-box">
+    <h2 id="question-text">Loading…</h2>
+  </div>
+
+  <!-- Answer buttons (2×2 grid) -->
+  <div id="answers-grid">
+    <button class="answer-btn a" data-idx="0">
+      <span class="btn-icon">▲</span>
+      <span class="btn-text"></span>
+    </button>
+    <button class="answer-btn b" data-idx="1">
+      <span class="btn-icon">◆</span>
+      <span class="btn-text"></span>
+    </button>
+    <button class="answer-btn c" data-idx="2">
+      <span class="btn-icon">●</span>
+      <span class="btn-text"></span>
+    </button>
+    <button class="answer-btn d" data-idx="3">
+      <span class="btn-icon">■</span>
+      <span class="btn-text"></span>
+    </button>
+  </div>
+
+  <!-- Feedback panel (hidden until answer selected) -->
+  <div id="feedback-box" style="display:none">
+    <div id="feedback-icon"></div>
+    <p id="feedback-result"></p>
+    <p id="feedback-explanation"></p>
+    <button id="next-btn">Next →</button>
+  </div>
+
+  <!-- Results panel (hidden until quiz ends) -->
+  <div id="results-box" style="display:none">
+    <h2>Quiz Complete!</h2>
+    <div id="results-score-big"></div>
+    <p id="results-msg"></p>
+    <button id="restart-btn">Try Again</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "What does ATR stand for in the context of digitizing historical documents?",
+    answers: [
+      "Automated Text Recognition",
+      "Advanced Transcription Research",
+      "Archival Text Retrieval",
+      "Automated Token Rendering"
+    ],
+    correct: 0,
+    explanation: "ATR — Automated Text Recognition — is the umbrella term covering both OCR (printed text) and HTR (handwritten text)."
+  },
+  {
+    q: "What does CER stand for, and what does a CER of 0.05 mean?",
+    answers: [
+      "Character Error Rate — roughly 1 error per 20 characters",
+      "Correct Evaluation Ratio — 95% of characters are correct",
+      "Character Encoding Rate — Unicode coverage ratio",
+      "Contextual Error Rank — rank of the most common error"
+    ],
+    correct: 0,
+    explanation: "CER = (Substitutions + Deletions + Insertions) / Total characters. A CER of 0.05 means 5 errors per 100 characters, or roughly one error per 20 characters."
+  },
+  {
+    q: "Which HTR engine does eScriptorium use under the hood?",
+    answers: [
+      "Tesseract",
+      "PyLaia",
+      "Kraken",
+      "Calamari"
+    ],
+    correct: 2,
+    explanation: "eScriptorium is a web interface built on top of the Kraken HTR engine, which handles both segmentation and text recognition."
+  },
+  {
+    q: "What is the file format used by Kraken for trained recognition models?",
+    answers: [
+      ".pkl (Python pickle)",
+      ".mlmodel (PyTorch-based)",
+      ".h5 (HDF5)",
+      ".onnx (Open Neural Network Exchange)"
+    ],
+    correct: 1,
+    explanation: "Kraken saves models as .mlmodel files — a PyTorch-based format that can be imported directly into eScriptorium."
+  },
+  {
+    q: "What transcription policy does CATMuS Medieval use?",
+    answers: [
+      "Semi-diplomatic with selective abbreviation expansion",
+      "Normalized modern spelling for readability",
+      "Strictly graphematic with no abbreviation expansion (Unicode NFD)",
+      "Fully expanded diplomatic with editorial markup"
+    ],
+    correct: 2,
+    explanation: "CATMuS Medieval is strictly graphematic: it transcribes exactly what is written, without expanding abbreviations, using Unicode NFD normalization."
+  },
+  {
+    q: "What is HTR-United?",
+    answers: [
+      "A commercial cloud platform for HTR model training",
+      "A United Nations initiative for digitizing world archives",
+      "A community catalogue and metadata standard for sharing HTR datasets and models",
+      "A consortium of European libraries offering shared Transkribus credits"
+    ],
+    correct: 2,
+    explanation: "HTR-United provides the HUMU metadata schema and a searchable catalogue (htr-united.github.io) to make HTR datasets and models findable and citable."
+  },
+  {
+    q: "TrOCR uses which encoder architecture to process the line image?",
+    answers: [
+      "ResNet CNN",
+      "BEiT (Bidirectional Encoder representation from Image Transformers)",
+      "LSTM with attention",
+      "U-Net"
+    ],
+    correct: 1,
+    explanation: "TrOCR uses BEiT (or DeiT for base models) as its image encoder — a Vision Transformer pre-trained with masked image modeling."
+  },
+  {
+    q: "In which scenario would a Vision Language Model (VLM) most likely outperform a dedicated HTR model?",
+    answers: [
+      "Large-scale digitization of 50,000 pages with a well-known script",
+      "A completely unknown script with no available training data",
+      "Fine-grained diplomatic transcription of a single medieval charter",
+      "Training a new model with 200 manually annotated pages"
+    ],
+    correct: 1,
+    explanation: "VLMs excel in zero-shot scenarios — when no training data exists for the specific script or hand. Once ~50–200 pages of ground truth are available, fine-tuned dedicated models typically outperform VLMs."
+  },
+  {
+    q: "The OICEN-HTR models for Old Icelandic are all fine-tuned on which base model?",
+    answers: [
+      "TRIDIS v2",
+      "Generic CREMMA 1.0.1",
+      "CATMuS Medieval 1.6.0",
+      "BiblIA_01"
+    ],
+    correct: 2,
+    explanation: "All OICEN models (AlexS, MB, CodWorm, Combined) use CATMuS Medieval 1.6.0 as their starting base, demonstrating CATMuS's role as a universal transfer base for community fine-tuning."
+  },
+  {
+    q: "What is the SegmOnto ontology used for?",
+    answers: [
+      "Evaluating CER across different transcription systems",
+      "Standardizing vocabulary for labeling layout regions on manuscript pages",
+      "Defining Unicode character ranges for historical scripts",
+      "Mapping manuscript hands to named scribes"
+    ],
+    correct: 1,
+    explanation: "SegmOnto provides a standardized set of region type labels (MainZone, MarginTextZone, DropCapitalZone, etc.) for annotating manuscript layouts in a consistent, interoperable way."
+  },
+  {
+    q: "Which model family is the recommended choice for medieval Hebrew manuscript recognition in the Kraken/eScriptorium ecosystem?",
+    answers: [
+      "CATMuS Medieval (it covers all scripts)",
+      "TRIDIS v2 (its training includes Aramaic texts)",
+      "BiblIA (Ashkenazi_01, Italian_01, Sephardi_01)",
+      "MiDRASH Geniza 01 (universal Hebrew model)"
+    ],
+    correct: 2,
+    explanation: "The BiblIA family provides three script-specific models (Ashkenazi, Italian, Sephardi book hands) trained on BnF and Vatican medieval Hebrew manuscripts. MiDRASH Geniza 01 specializes in Geniza fragments specifically."
+  },
+  {
+    q: "What is the approximate crossover point at which fine-tuning a dedicated model becomes preferable to using a VLM zero-shot?",
+    answers: [
+      "5 annotated lines",
+      "10 annotated pages",
+      "50–200 annotated pages",
+      "10,000 annotated lines"
+    ],
+    correct: 2,
+    explanation: "Research suggests that once approximately 50–200 pages of ground truth are available, a fine-tuned dedicated model (Kraken/TrOCR) typically outperforms VLM zero-shot on historical handwriting."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function shuffle(arr) {
+  // Fisher-Yates (we only shuffle questions, not answer order, to keep correct idx)
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const questions = shuffle([...QUESTIONS]);
+
+function render() {
+  const q = questions[current];
+  answered = false;
+
+  // Header
+  const pct = (current / questions.length) * 100;
+  document.getElementById("progress-bar-inner").style.width = pct + "%";
+  document.getElementById("q-counter").textContent = (current + 1) + " / " + questions.length;
+  document.getElementById("q-score").textContent = "Score: " + score;
+
+  // Question
+  document.getElementById("question-text").textContent = q.q;
+
+  // Answers
+  const btns = document.querySelectorAll(".answer-btn");
+  btns.forEach((btn, i) => {
+    btn.querySelector(".btn-text").textContent = q.answers[i];
+    btn.disabled = false;
+    btn.classList.remove("correct", "wrong", "correct-reveal");
+    btn.style.opacity = "";
+  });
+
+  // Hide feedback and results
+  document.getElementById("feedback-box").style.display = "none";
+  document.getElementById("results-box").style.display = "none";
+  document.getElementById("answers-grid").style.display = "";
+  document.getElementById("question-box").style.display = "";
+  document.getElementById("quiz-header").style.display = "";
+}
+
+function showFeedback(selected) {
+  const q = questions[current];
+  const btns = document.querySelectorAll(".answer-btn");
+  btns.forEach(btn => btn.disabled = true);
+
+  const isCorrect = selected === q.correct;
+  if (isCorrect) score++;
+
+  btns.forEach((btn, i) => {
+    if (i === q.correct) {
+      btn.classList.add("correct-reveal");
+    } else if (i === selected && !isCorrect) {
+      btn.classList.add("wrong");
+    }
+  });
+
+  document.getElementById("feedback-icon").textContent = isCorrect ? "✅" : "❌";
+  document.getElementById("feedback-result").textContent = isCorrect ? "Correct!" : "Not quite.";
+  document.getElementById("feedback-result").style.color = isCorrect ? "#0f7d28" : "#ad0023";
+  document.getElementById("feedback-explanation").textContent = q.explanation;
+
+  const nextBtn = document.getElementById("next-btn");
+  nextBtn.textContent = current < questions.length - 1 ? "Next →" : "See Results";
+  document.getElementById("feedback-box").style.display = "";
+  document.getElementById("q-score").textContent = "Score: " + score;
+}
+
+function showResults() {
+  document.getElementById("answers-grid").style.display = "none";
+  document.getElementById("question-box").style.display = "none";
+  document.getElementById("feedback-box").style.display = "none";
+  document.getElementById("quiz-header").style.display = "none";
+  document.getElementById("results-box").style.display = "";
+
+  const pct = Math.round((score / questions.length) * 100);
+  document.getElementById("results-score-big").textContent = score + " / " + questions.length;
+
+  let msg;
+  if (pct === 100) msg = "Perfect score! You are an ATR expert. 🎉";
+  else if (pct >= 80) msg = "Excellent — you have a strong grasp of ATR concepts.";
+  else if (pct >= 60) msg = "Good job! Review the sections where you were unsure.";
+  else if (pct >= 40) msg = "A solid start — revisit the Introduction and Models sections.";
+  else msg = "Keep reading — the Introduction is a great place to begin.";
+
+  document.getElementById("results-msg").textContent = msg;
+}
+
+// Event listeners
+document.querySelectorAll(".answer-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (answered) return;
+    answered = true;
+    showFeedback(parseInt(btn.dataset.idx));
+  });
+});
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  current++;
+  if (current < questions.length) {
+    render();
+  } else {
+    showResults();
+  }
+});
+
+document.getElementById("restart-btn").addEventListener("click", () => {
+  current = 0;
+  score = 0;
+  shuffle(questions);
+  render();
+});
+
+// Initialize
+render();
+</script>
+```

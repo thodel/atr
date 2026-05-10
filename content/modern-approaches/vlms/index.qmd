@@ -1,0 +1,156 @@
+---
+title: "Vision Language Models"
+description: "Applying large multimodal models — GPT-4o, Gemini, Llama, and others — to historical text recognition."
+---
+
+## What are Vision Language Models?
+
+**Vision Language Models (VLMs)** are large neural networks that can process both images and text simultaneously, generating natural language responses to visual inputs. Unlike dedicated HTR models that output only transcribed text, VLMs can answer questions, describe content, extract structured information, and transcribe text — all from a single prompt-image pair.
+
+The most capable VLMs as of 2025 include:
+
+| Model | Provider | Access | Open weights |
+|---|---|---|---|
+| GPT-4o | OpenAI | API | No |
+| Gemini 1.5 Pro / 2.0 | Google | API | No |
+| Claude 3.5 Sonnet | Anthropic | API | No |
+| Llama 3.2 Vision | Meta | Open | Yes |
+| InternVL2 | Shanghai AI Lab | Open | Yes |
+| Qwen2.5-VL | Alibaba | Open | Yes |
+| Florence-2 | Microsoft | Open | Yes |
+| PaliGemma | Google | Open | Yes |
+
+## VLMs for Text Recognition: The Basic Approach
+
+The simplest application of a VLM to ATR is zero-shot prompting: provide the model with an image of a manuscript page (or a text line) and ask it to transcribe the text.
+
+```python
+import anthropic, base64
+
+with open("manuscript_line.jpg", "rb") as f:
+    img_data = base64.standard_b64encode(f.read()).decode()
+
+client = anthropic.Anthropic()
+message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    messages=[{
+        "role": "user",
+        "content": [
+            {"type": "image", "source": {
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": img_data
+            }},
+            {"type": "text",
+             "text": "Transcribe the handwritten text in this image exactly as written, "
+                     "preserving the original spelling and abbreviations."}
+        ]
+    }]
+)
+print(message.content[0].text)
+```
+
+## Capabilities and Strengths
+
+VLMs offer several advantages over specialized HTR models in specific scenarios:
+
+### Zero-shot flexibility
+
+A capable VLM can handle any script, language, or document type without any training data. For a researcher encountering a completely unfamiliar hand with no existing training material, a VLM may produce a useful first approximation.
+
+### Multimodal reasoning
+
+VLMs can combine transcription with interpretation. You can ask a VLM to:
+- Transcribe *and* identify abbreviations
+- Extract named entities (persons, places, dates) directly from an image
+- Describe the layout and structure of a page
+- Translate historical text while transcribing it
+
+### Handling complex layouts
+
+VLMs handle multi-column layouts, marginalia, tables, and mixed scripts more gracefully than pipeline-based systems that require explicit segmentation.
+
+### Iterative refinement via prompting
+
+If the initial transcription contains errors, you can provide feedback in a follow-up prompt: "The third word looks more like 'dicto' than 'dico' — please revise." This interactive refinement is unique to VLMs.
+
+## Limitations for Historical Documents
+
+Despite their flexibility, VLMs have significant limitations for systematic historical ATR:
+
+### Inconsistency
+
+VLMs produce stochastic outputs. The same image with the same prompt will yield slightly different transcriptions across runs. This is problematic for projects requiring reproducible, citable transcriptions.
+
+### Hallucination
+
+Language model components can "fill in" text that is not actually visible, especially for degraded or ambiguous passages. VLMs sometimes generate plausible-but-wrong text that looks confident.
+
+### Script coverage
+
+Most VLMs are trained predominantly on Latin-script modern text. Performance on non-Latin scripts (Hebrew, Arabic, Greek, etc.), unusual historical scripts, and heavily abbreviated Latin is substantially lower.
+
+### Cost at scale
+
+Processing an entire archival collection of 100,000 pages via a commercial VLM API is expensive. Cost per page varies by provider and image size, but even $0.01/page yields $1,000 for 100k pages — before any correction costs.
+
+### No fine-tuning for most APIs
+
+Commercial VLM APIs (GPT-4o, Claude, Gemini) do not allow fine-tuning on custom manuscript data. Open models (Llama, InternVL, Qwen) can be fine-tuned, but require substantial GPU resources.
+
+### GDPR and data sovereignty
+
+Sending archival images to external commercial APIs raises legal and ethical questions about unpublished or restricted material.
+
+## Benchmark Evidence
+
+Several studies have evaluated VLMs against dedicated HTR systems on historical manuscripts. The general pattern as of 2025:
+
+- **GPT-4o, Gemini 1.5 Pro** achieve competitive results (~5–15% CER) on clean, legible 19th-century printed or semi-printed historical material, but degrade substantially on medieval scripts.
+- **Dedicated fine-tuned models** (CATMuS, TRIDIS, TrOCR) consistently outperform VLMs on historical handwriting when sufficient training data is available.
+- **VLMs outperform dedicated models** in zero-shot scenarios on very low-resource scripts or hands with no available training data.
+
+The crossover point — where training data makes dedicated models preferable — is approximately **50–200 ground-truth pages**, depending on script complexity.
+
+## Practical Recommendations
+
+| Scenario | Recommended approach |
+|---|---|
+| Unknown script, no training data | VLM zero-shot as first step |
+| 50+ pages of ground truth available | Fine-tune CATMuS/TrOCR; use VLM for comparison |
+| Complex multimodal extraction (entities, structure) | VLM with structured output prompting |
+| Large-scale archival digitization | Dedicated model (cost, consistency, speed) |
+| Rapid prototype / exploration | VLM for speed; replace with trained model at scale |
+| Non-Latin script, community model exists | Use specialized model (BiblIA, MiDRASH, etc.) |
+
+## Emerging Approaches: VLM + HTR Hybrid
+
+A promising hybrid workflow combines VLMs with dedicated HTR:
+
+1. Use a dedicated model for bulk transcription
+2. Identify low-confidence regions (using CTC probability scores or beam search entropy)
+3. Pass low-confidence line images to a VLM for a second-opinion transcription
+4. Human review of disagreements only
+
+This keeps costs low while leveraging VLM strength on genuinely difficult cases.
+
+## Open VLMs for Self-Hosted Deployment
+
+For projects with data sovereignty requirements, open-weight VLMs can run on local GPU infrastructure:
+
+```bash
+# Example: Llama 3.2 Vision via Ollama
+ollama run llama3.2-vision
+# Then query via HTTP API with base64-encoded image
+```
+
+**InternVL2** and **Qwen2.5-VL** have shown particularly strong multilingual and OCR performance in open-source evaluations and are worth testing for historical document tasks.
+
+## Key References
+
+- Fujii, Y. et al. (2024). *Evaluation of Large Language Models for Historical Document Recognition*. arXiv preprint.
+- Rombach, R. et al. (2024). Benchmarking multimodal models on handwriting recognition. *ICDAR 2024*.
+- OpenAI (2024). GPT-4 Technical Report. <https://openai.com/research/gpt-4>
+- Anthropic (2024). Claude 3 Model Card. <https://www.anthropic.com/claude>
+- Meta (2024). Llama 3 Vision: Open foundation and fine-tuned chat models. <https://ai.meta.com/llama/>

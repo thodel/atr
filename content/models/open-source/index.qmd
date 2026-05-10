@@ -1,0 +1,309 @@
+---
+title: "Open-Source Models for Kraken / eScriptorium"
+description: "A curated overview of publicly available HTR models for medieval and early modern manuscripts, organized by language and script family."
+---
+
+## Overview
+
+The Kraken/eScriptorium ecosystem has produced a growing library of publicly available HTR models. Most are distributed via **Zenodo** or **GitHub** as `.mlmodel` files (Kraken's PyTorch-based format) and can be imported directly into eScriptorium or applied from the Kraken command line.
+
+The landscape has shifted markedly since 2024: the field has moved from small, project-specific models toward broad, transferable base models — chiefly **CATMuS Medieval** and **TRIDIS v2** — which are now used as starting points for community fine-tuning.
+
+::: {.tip-box}
+**How to use these models in eScriptorium:** Download the `.mlmodel` file from Zenodo, then upload it via *Models → Import model* in eScriptorium. For command-line use: `kraken -i image.jpg output.txt ocr -m model.mlmodel`
+:::
+
+## Model Comparison Table
+
+| Model | Script / Script type | Language(s) | Reported accuracy | Year |
+|---|---|---|---|---|
+| CATMuS Medieval 1.6.0 | Mixed Latin scripts | Fr, La, Es, It, … | CER < 5% (optimal conditions) | 2025 |
+| TRIDIS v2 | Textualis, Cursiva | La, Fr, Es | CER ~0.11–0.15 (external sets) | 2024 |
+| Generic CREMMA 1.0.1 | Mixed, 8th–15th c. | La, Old French | Not reported | 2023 |
+| Bicerin 1.1.0 | Mixed medieval | Old French | 95.30% accuracy | 2022 |
+| FROC / model_froc | Praegothica, Textualis | Old Fr, Old Oc | CER 7.83% (test) | 2018 |
+| BiblIA_01 | Hebrew scripts (mixed) | He, Aram | Not reported | 2021 |
+| MiDRASH Geniza 01 | Geniza fragments | He, Aram, Judeo-Arabic | Not reported | 2025 |
+| Meleagre-NFD-finetuned | Byzantine Greek minuscule | Greek | 91.05% accuracy | 2024 |
+| GreekHTR / greekmix_01 | Greek minuscule, 9th–12th c. | Greek | Not reported (preview) | 2025 |
+| OICEN Combined 0.1 | Old Icelandic, mixed | Old Icelandic/Norse | CER ~2.6% (Char. 97.4%) | 2025 |
+| Bifrost 0.1 | Old Norse manuscripts | Old Norse | Not reported | 2025 |
+| textualis_anna_jaeck | Textualis, single hand | Middle High German | CER 4.88% | 2025/26 |
+| bastarda_jos_von_pfullendorf | Bastarda, single hand | Middle High German | CER 3.35% | 2025/26 |
+| cursive_johannes_jaeck | Cursive, single hand | Middle High German | CER 4.29% | 2025/26 |
+
+---
+
+## Generic and Multi-Language Base Models
+
+These models cover broad domains and are the recommended starting point for new projects.
+
+### CATMuS Medieval 1.6.0
+
+::: {.model-card}
+#### CATMuS Medieval 1.6.0
+
+The current state-of-the-art generic base model for medieval Latin-script manuscripts. Released in 2025 as part of the Consistent Approaches to Transcribing ManuScripts (CATMuS) initiative.
+
+::: {.model-meta}
+[Zenodo: 10.5281/zenodo.15030337]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[16.4 MB]{.model-badge}
+[Old/Middle French · Latin · Old Spanish · Italian]{.model-badge .lang}
+[CER < 5% (optimal)]{.model-badge .metric}
+:::
+
+- **Training data:** > 160,000 lines, > 5 million characters, > 200 manuscripts/incunabula, 10 languages
+- **Transcription policy:** Strictly graphematic; abbreviations *not* expanded; Unicode NFD
+- **Time range:** 8th–16th century
+- **Best use:** Fine-tuning starting point for any Western Latin-script manuscript; general transcription of French, Latin, or Iberian medieval material
+
+**Limitations:** No single canonical benchmark metric; high corpus heterogeneity; may generalize poorly to very idiosyncratic hands without fine-tuning.
+:::
+
+### TRIDIS v1 / v2
+
+::: {.model-card}
+#### TRIDIS v2
+
+A semi-diplomatic model optimized for documentary manuscripts — charters, registers, feudal books, and administrative records.
+
+::: {.model-meta}
+[Zenodo: TRIDIS v2]{.model-badge}
+[Hugging Face mirror]{.model-badge}
+[Latin · Old French · Old Spanish]{.model-badge .lang}
+[v1: CER ~0.11–0.15 on external sets]{.model-badge .metric}
+:::
+
+- **Training data:** v1: 1,855 pages, 120k lines; v2: adds 115k lines from Königsfelden, Monumenta Luxemburgensia, and others
+- **Transcription policy:** Semi-diplomatic
+- **Time range:** 11th–16th century; emphasis on late medieval documentary material
+- **Best use:** Charters, cartularies, account books, and administrative records in Latin/Old French/Old Spanish
+
+**Limitations:** Less suited to literary manuscripts or projects requiring strictly graphematic output.
+:::
+
+### Generic CREMMA 1.0.1
+
+::: {.model-card}
+#### Generic CREMMA for Medieval Manuscripts 1.0.1
+
+A broad Latin/Old French model from the CREMMA project (Corpus et Reconnaissance d'Écritures Médiévales Manuscrites).
+
+::: {.model-meta}
+[Zenodo: 10.5281/zenodo.7631619]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[22.8 MB]{.model-badge}
+[Latin · Old French]{.model-badge .lang}
+:::
+
+- **Training data:** 7 sub-corpora, 45,885 lines, 1,357,646 characters, 76 manuscripts (8th–15th c.)
+- **Transcription policy:** Guideline-based (CREMMA/SegmOnto)
+- **Best use:** Broad Latin/French manuscripts when CATMuS is not yet available or not suitable
+:::
+
+---
+
+## French and Occitan Models
+
+### Bicerin 1.0/1.1 (CREMMA Medieval)
+
+::: {.model-card}
+#### Bicerin 1.1.0
+
+The mature CREMMA medieval model with a strong focus on Old French manuscripts from the 12th–15th century.
+
+::: {.model-meta}
+[Zenodo · GitHub: HTR-United/cremma-medieval]{.model-badge}
+[CC BY 4.0 / CC BY-SA 2.0 (check per artifact)]{.model-badge}
+[Old French]{.model-badge .lang}
+[95.30% accuracy]{.model-badge .metric}
+:::
+
+- **Training data:** 22,662 lines in 16 manuscripts
+- **Note:** License inconsistency between Zenodo record and GitHub — verify before reuse.
+:::
+
+### FROC / model_froc
+
+::: {.model-card}
+#### FROC-MSS
+
+A transparent, well-documented model for Anglo-Norman praegothica and gothic textualis in Old French and Old Occitan.
+
+::: {.model-meta}
+[GitHub: FROC-MSS]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[Old French · Old Occitan]{.model-badge .lang}
+[CER 7.83% (test)]{.model-badge .metric}
+:::
+
+- **Training data:** 3,636 lines from 4 manuscripts; 80/10/10 split; allographic transcription; NFD
+- **Time range:** 12th–13th century
+- **Best use:** Anglo-Norman or Occitan documentary and literary hands; methodologically valuable as a fully transparent baseline.
+:::
+
+---
+
+## Hebrew and Geniza Models
+
+### BiblIA Family
+
+::: {.model-card}
+#### BiblIA_01 + Ashkenazi_01 / Italian_01 / Sephardi_01
+
+Four complementary models for medieval Hebrew manuscripts: one general model and three script-specialized variants for Ashkenazi, Italian, and Sephardi book hands.
+
+::: {.model-meta}
+[Zenodo: BiblIA_01 + 3 sub-models]{.model-badge}
+[CC BY-SA 4.0 (check sofer_mahir repo for NC variant)]{.model-badge}
+[Hebrew · Aramaic]{.model-badge .lang}
+[~16 MB each]{.model-badge}
+:::
+
+- **Training data:** 202 images from BnF and Vatican medieval Hebrew manuscripts
+- **Transcription:** ALTO 4.2 XML with Unicode; editorial markup for additions, deletions, abbreviations
+- **Best use:** Primary open resource for medieval Hebrew manuscript recognition; covers the three main regional book-script traditions.
+
+The [sofer_mahir](https://github.com/sitzikbs/sofer_mahir) repository also includes two **segmentation models** for Hebrew manuscripts (regions + margins/paratext).
+:::
+
+### MiDRASH Geniza 01
+
+::: {.model-card}
+#### MiDRASH Geniza 01
+
+A dedicated model for Cairo Geniza fragments, covering documentary and literary texts in multiple Jewish languages.
+
+::: {.model-meta}
+[Zenodo: MiDRASH Geniza 01]{.model-badge}
+[CC BY-NC-SA 4.0]{.model-badge}
+[23 MB]{.model-badge}
+[Hebrew · Judeo-Arabic · Jewish Babylonian Aramaic]{.model-badge .lang}
+:::
+
+- **Training data:** Fine-tuned on documentary and literary Geniza texts; exact size not reported
+- **Transcription:** MiDRASH guidelines; abbreviations *not* expanded; NFKD normalization
+- **Released:** December 2025
+- **Best use:** The clearest public model for mixed Geniza fragments in the Kraken/eScriptorium ecosystem.
+:::
+
+---
+
+## Greek Models
+
+### Meleagre-NFD-finetuned
+
+::: {.model-card}
+#### HTR Model Palatinus graecus 23 (Meleagre-NFD-finetuned)
+
+A narrow specialist model for one specific Byzantine Greek manuscript — Codex Palatinus graecus 23 (Palatine Anthology), 10th century.
+
+::: {.model-meta}
+[Zenodo: 10.5281/zenodo.10932751]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[Ancient Greek]{.model-badge .lang}
+[91.05% accuracy]{.model-badge .metric}
+:::
+
+- **Training data:** 70 pages of Cod. Pal. gr. 23; NFD normalized
+- **Best use:** Edition work on this specific codex or closely related Byzantine book hands.
+:::
+
+### GreekHTR / greekmix_01
+
+::: {.model-card}
+#### Greek Handwritten Text Recognition Model (9th–12th c.)
+
+A preview model for Byzantine Greek minuscule from the 9th to 12th century, trained on manuscripts from the Vatican Library and the Patristic Text Archive.
+
+::: {.model-meta}
+[Zenodo: preview release]{.model-badge}
+[CC BY-SA 4.0]{.model-badge}
+[20 MB]{.model-badge}
+[Ancient Greek]{.model-badge .lang}
+:::
+
+- **Status:** Preview; dataset not yet released
+- **Best use:** Experimental baseline for patristic/Byzantine minuscule; treat as a starting point for fine-tuning rather than a production model.
+:::
+
+---
+
+## Old Norse / Old Icelandic Models
+
+### OICEN-HTR Bundle
+
+::: {.model-card}
+#### OICEN Combined 0.1
+
+A bundle of fine-tuned models for Old Icelandic and Old Norse manuscripts, all built on CATMuS Medieval 1.6.0 as base.
+
+::: {.model-meta}
+[Zenodo: OICEN v0.1 / v0.2]{.model-badge}
+[CC BY-SA 4.0]{.model-badge}
+[Old Icelandic / Old Norse]{.model-badge .lang}
+[Combined: 97.41% Char. / 91.42% Word accuracy]{.model-badge .metric}
+:::
+
+**Individual models:**
+- *AlexS v1.0* — Alexanders saga (AM 519 a 4to); 98.81% char. accuracy
+- *MB v0.3* — Möðruvallabók (AM 132 fol); 99.01% char. accuracy (likely overfitted)
+- *CodWorm v1.0* — Codex Wormianus (AM 242 fol); 99.10% char. accuracy
+- *Combined v0.1* — all three corpora merged; 97.41% char. accuracy
+
+**Transcription:** Menota-based facsimile annotations; eScriptorium used for text-to-line alignment.
+
+An instructive example of how rapidly a hand-specific model overfits when training data is very homogeneous.
+:::
+
+### Bifrost 0.1
+
+::: {.model-card}
+#### Bifrost 0.1
+
+A proof-of-concept FAIR-oriented release for Old Norse manuscripts, built on CATMuS Medieval.
+
+::: {.model-meta}
+[Zenodo: Bifrost 0.1]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[16.4 MB]{.model-badge}
+[Old Norse]{.model-badge .lang}
+:::
+
+- **Training data:** Selected leaves from 2 manuscripts; test on 4 manuscripts
+- **Best use:** Community release demonstrating the CATMuS fine-tuning workflow for Old Norse; not yet benchmarked.
+:::
+
+---
+
+## Middle High German Models (Inzigkofen)
+
+::: {.model-card}
+#### Inzigkofen Manuscript Models (15th century)
+
+Three single-hand models for 15th-century Gothic scripts from the manuscripts of the Augustinian canonesses in Inzigkofen (Staatsbibliothek zu Berlin).
+
+::: {.model-meta}
+[Zenodo: package + individual DOIs]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[Middle High German]{.model-badge .lang}
+:::
+
+| Model | Script | Images | Base model | CER |
+|---|---|---|---|---|
+| textualis_anna_jaeck | Textualis | 49 | TRIDIS v2 | 4.88% |
+| bastarda_jos_von_pfullendorf | Bastarda | 24 | CATMuS Medieval | 3.35% |
+| cursive_johannes_jaeck | Cursive | 38 | CATMuS Medieval | 4.29% |
+
+A textbook example of successful single-hand fine-tuning with very small training sets (24–49 images).
+:::
+
+---
+
+## Where to Find More Models
+
+- **HTR-United catalogue:** <https://htr-united.github.io/> — searchable index of community models and datasets
+- **Zenodo OCR/HTR community:** <https://zenodo.org/communities/ocr_models/>
+- **GitHub: HTR-United org:** <https://github.com/HTR-United>
+- **Hugging Face:** Some models are mirrored at <https://huggingface.co/> (search for `kraken` or `htr`)

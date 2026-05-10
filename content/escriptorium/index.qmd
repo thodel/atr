@@ -1,0 +1,133 @@
+---
+title: "eScriptorium"
+description: "The open-source annotation and transcription platform. Workflow, model training, export, and key resources."
+---
+
+## What is eScriptorium?
+
+**eScriptorium** is a free, open-source web application for the annotation, transcription, and training of historical documents. It was developed at the École Pratique des Hautes Études (EPHE) in Paris, initially as part of the [Scripta](https://scripta.psl.eu/) project, and is built on top of the **Kraken** HTR engine.
+
+Unlike Transkribus, eScriptorium is fully open source (MIT license), and all models produced with it can be exported, shared, and reused without restriction. It is the platform of choice for researchers who prioritize reproducibility and data sovereignty.
+
+::: {.tip-box}
+**eScriptorium vs. Transkribus:** Both platforms offer layout analysis and HTR training. eScriptorium is open source and uses Kraken; Transkribus is commercial and uses PyLaia. eScriptorium is better for research projects requiring full control over training data and models; Transkribus has a larger pre-existing model library and a more polished user interface.
+:::
+
+## Core Components
+
+eScriptorium is a thin web interface on top of two foundational libraries:
+
+- **[Kraken](https://kraken.re/)** — the underlying HTR engine, handling baseline detection, segmentation, and text recognition. Kraken models are `.mlmodel` files (PyTorch-based).
+- **[LAREX](https://github.com/OCR4all/LAREX)** (optional integration) — a separate region annotation tool sometimes used alongside eScriptorium for complex layouts.
+
+## The eScriptorium Workflow
+
+A typical project in eScriptorium follows five stages:
+
+### 1. Import
+
+Images are uploaded directly via the web interface or imported from an IIIF manifest. Supported formats include JPEG, PNG, TIFF, and PDF. Existing transcriptions in ALTO XML, PAGE XML, or plain text can be imported alongside images to bootstrap training.
+
+### 2. Segmentation
+
+Layout analysis identifies regions and baselines. Users can:
+
+- Apply an **existing segmentation model** (including the bundled default `blla.mlmodel`)
+- Manually correct the detected baselines using the graphical editor
+- Train a **custom segmentation model** on corrected annotations
+
+The eScriptorium segmentation editor displays baselines as draggable polylines overlaid on the page image. Region types follow the [SegmOnto](https://segmonto.github.io/) vocabulary.
+
+### 3. Transcription
+
+Text lines are transcribed — either manually or by applying an existing recognition model. Transcription happens in a split-view panel showing the line image alongside the text input field. Special characters, abbreviation marks, and Unicode combining characters are supported.
+
+Ground-truth transcriptions created at this stage become the training data for new or fine-tuned models.
+
+### 4. Model Training
+
+Once sufficient ground truth is available, a new HTR model can be trained directly from the interface. The training process calls Kraken's `ketos train` command internally and displays a live loss curve. Key parameters exposed in the UI include:
+
+| Parameter | Typical value | Notes |
+|---|---|---|
+| Base model | e.g., CATMuS Medieval | Starting point for fine-tuning |
+| Training/validation split | 90 / 10 | Configurable |
+| Epochs | 50–200 | Early stopping applied |
+| Architecture | LSTM + CTC | Default; transformer heads also available |
+
+::: {.tip-box}
+**Fine-tuning vs. training from scratch:** For most historical document projects, fine-tuning a strong base model (such as [CATMuS Medieval](../models/open-source/index.qmd)) on 20–100 manually transcribed pages yields dramatically better results than training from scratch, especially when data is scarce.
+:::
+
+### 5. Export
+
+Recognized text can be exported in multiple formats:
+
+- **ALTO XML** — standard archival format preserving layout geometry
+- **PAGE XML** — W3C standard with rich structural metadata
+- **TEI XML** — for scholarly editions
+- **Plain text** — line-by-line or page-by-page
+
+Models themselves export as Kraken `.mlmodel` files that can be shared via [Zenodo](https://zenodo.org/) or [HTR-United](../models/htr-united/index.qmd).
+
+## Setting Up eScriptorium
+
+eScriptorium can be run in several ways:
+
+### Self-hosted (Docker)
+
+The recommended production setup uses Docker Compose:
+
+```bash
+git clone https://gitlab.com/scripta/escriptorium.git
+cd escriptorium
+cp .env.example .env          # configure database, secret key, etc.
+docker compose up --build
+```
+
+A full setup guide is maintained in the [official documentation](https://escriptorium.readthedocs.io/).
+
+### Hosted Instances
+
+Several institutions run public or semi-public eScriptorium instances:
+
+| Instance | URL | Access |
+|---|---|---|
+| EPHE (reference) | <https://escriptorium.fr/> | Registration required |
+| Scripta PSL | <https://escriptorium.psl.eu/> | Registration required |
+| University of Bern (DH) | Internal | Staff / project members |
+
+### Local Development
+
+For development or training experiments, Kraken can be used directly from the command line, bypassing the web interface:
+
+```bash
+pip install kraken
+# Segment a page
+kraken -i page.jpg seg.json segment -bl
+# Recognize with a model
+kraken -i page.jpg output.txt ocr -m model.mlmodel
+```
+
+## Key Resources
+
+| Resource | Link |
+|---|---|
+| eScriptorium documentation | <https://escriptorium.readthedocs.io/> |
+| Kraken documentation | <https://kraken.re/> |
+| Kraken source code | <https://github.com/mittagessen/kraken> |
+| eScriptorium source code | <https://gitlab.com/scripta/escriptorium> |
+| SegmOnto ontology | <https://segmonto.github.io/> |
+| HTR-United model catalogue | <https://htr-united.github.io/> |
+| Zenodo HTR model community | <https://zenodo.org/communities/ocr_models/> |
+
+## Video Tutorials
+
+- **Introduction to eScriptorium** — screencast series by the SCRIPTA project (French with English subtitles): [YouTube playlist](https://www.youtube.com/playlist?list=PLHmNF4bG4qQEbHpyVjibNHMFYjSJ5Omf4)
+- **Kraken + eScriptorium workshop** — hands-on materials from Digital Humanities Summer Institute sessions.
+
+## Citing eScriptorium
+
+> Kiessling, B., Stoekl Ben Ezra, D., & Miller, M. T. (2019). BADAM: A public dataset for baseline detection in Arabic-script manuscripts. In *Proceedings of the 5th International Workshop on Historical Document Imaging and Processing* (pp. 19–24). ACM.
+
+> Kiessling, B. (2023). *Kraken — an universal text recognizer for the humanities*. <https://kraken.re/>

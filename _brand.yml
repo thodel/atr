@@ -1,0 +1,31 @@
+meta:
+  name:
+    full: Automated Text Recognition
+    short: ATR
+  link:
+    home: https://thodel.github.io/atr/
+    docs: https://thodel.github.io/atr/
+    github: https://github.com/thodel/atr
+  description: |
+    A teaching resource on Automated Text Recognition (OCR/HTR) covering tools,
+    open-source models, and modern deep learning approaches for historical documents.
+logo:
+  small: /logo.png
+  medium: /logo.png
+  large: /logo.png
+color:
+  foreground: "#222222"
+  background: "#FFFFFF"
+  primary: "#1a5276"
+  secondary: "#707073"
+  tertiary: "#E4E4E4"
+  success: "#0f7d28"
+  info: "#419599"
+  warning: "#EE6331"
+  danger: "#ad0023"
+  light: "#f5f5f5"
+  dark: "#404041"
+typography:
+  base: Switzer-Variable
+  headings: Switzer-Variable
+  monospace: Switzer-Variable

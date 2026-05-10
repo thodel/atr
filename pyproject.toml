@@ -1,0 +1,7 @@
+[project]
+name = "atr"
+version = "0.1.0"
+description = "Teaching resource for Automated Text Recognition (OCR/HTR)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
