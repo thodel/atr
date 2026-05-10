@@ -40,11 +40,14 @@ website:
             href: content/modern-approaches/trocr/index.qmd
           - text: "Vision Language Models"
             href: content/modern-approaches/vlms/index.qmd
+      - text: "Workshops"
+        href: content/workshops/index.qmd
       - text: "Quiz"
         href: content/quiz/index.qmd
       - text: "Literature"
         href: content/literature/index.qmd
   page-footer:
+
     left: "[Automated Text Recognition Teaching Resource](https://thodel.github.io/atr/)"
     center: "[GitHub](https://github.com/thodel/atr) · CC BY 4.0"
     right: "[Introduction](/content/introduction/index.qmd) · [Models](/content/models/open-source/index.qmd) · [Quiz](/content/quiz/index.qmd)"
@@ -71,6 +74,11 @@ website:
             href: content/modern-approaches/trocr/index.qmd
           - text: "Vision Language Models"
             href: content/modern-approaches/vlms/index.qmd
+      - section: "Workshops"
+        href: content/workshops/index.qmd
+        contents:
+          - text: "DMSI 2026 Kalamazoo"
+            href: content/workshops/dmsi-2026-kalamazoo/index.qmd
       - text: "Quiz"
         href: content/quiz/index.qmd
       - text: "Literature"

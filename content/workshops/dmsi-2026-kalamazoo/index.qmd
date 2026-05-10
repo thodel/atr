@@ -1,0 +1,222 @@
+---
+title: "DMSI 2026 Kalamazoo: Introduction to Handwritten Text Recognition"
+description: "Full-day workshop at the International Medieval Congress, Western Michigan University, 13 May 2026."
+---
+
+::: {.home-hero}
+## Introduction to Handwritten Text Recognition
+
+::: {.flow-meta}
+- **Event** — Digital Medievalist Summer Institute (DMSI) at the International Medieval Congress
+- **Location** — Sangren Hall 1720, Western Michigan University, Kalamazoo
+- **Date** — Wednesday, 13 May 2026
+- **Sessions** — 09:45–11:45 and 14:15–16:15
+:::
+
+::: {.hero-actions}
+[Session 1 ↓](#session-1){.hero-cta .hero-cta-primary}
+[Session 2 ↓](#session-2){.hero-cta .hero-cta-secondary}
+[All Teaching Materials](../../introduction/index.qmd){.hero-cta .hero-cta-secondary}
+:::
+:::
+
+## Overview
+
+This workshop offers a hands-on introduction to Automated Text Recognition (ATR) for medieval and early modern manuscripts. The morning session builds a shared conceptual foundation — what the technology is, where it stands today, and how to use it — while the afternoon gives participants direct practice on their own material and widens the view to include modern command-line and AI-based approaches.
+
+No prior technical experience is assumed. Participants are encouraged to bring their own scanned manuscript images for the afternoon session.
+
+---
+
+## Session 1 — Morning {#session-1}
+
+**09:45–11:45 · Sangren Hall 1720**
+
+| Time | Duration | Topic | Resources |
+|---|---|---|---|
+| 09:45 | 25 min | [ATR: Where are we at the moment?](#atr-state) | [Introduction](../../introduction/index.qmd) |
+| 10:10 | 15 min | [Round of introductions: ATR — where are you?](#introductions) | — |
+| 10:25 | 15 min | [Key concepts: data, ground truth, training, epistemological decisions](#key-concepts) | [Introduction → pipeline](../../introduction/index.qmd#the-recognition-pipeline) |
+| 10:40 | 15 min | [Interactive Transcription Environments (ITEs)](#ites) | [eScriptorium](../../escriptorium/index.qmd) |
+| 10:55 | 25 min | [How to use eScriptorium](#howto-escriptorium) | [eScriptorium → workflow](../../escriptorium/index.qmd#the-escriptorium-workflow) |
+| 11:20 | 5 min | [eScriptorium vs. Transkribus](#comparison) | — |
+| 11:25 | 5 min | [Business models, open science, and HTR-United](#open-science) | [HTR-United](../../models/htr-united/index.qmd) |
+
+### ATR: Where are we at the moment? {#atr-state}
+
+A concise state-of-the-field overview covering:
+
+- The distinction between **OCR** (printed text) and **HTR** (handwriting) and why it matters for medieval studies
+- Current performance benchmarks — what CER figures look like in practice for different script types and conditions
+- The two dominant platforms (**eScriptorium/Kraken** and **Transkribus**) and the landscape of community-trained models
+- The shift since 2024 toward large, transferable base models (CATMuS Medieval, TRIDIS v2) that the whole field can build on
+
+→ Background reading: [Introduction to ATR](../../introduction/index.qmd), [Open-Source Models](../../models/open-source/index.qmd)
+
+### Round of Introductions: ATR — where are you? {#introductions}
+
+A structured round in which each participant briefly shares:
+
+- What kind of material they work with (script, language, century)
+- What they have already tried (if anything) with ATR
+- What they hope to get out of the day
+
+This shapes the afternoon's hands-on session to the actual needs of the group.
+
+### Key Concepts {#key-concepts}
+
+Four foundational ideas that underpin every HTR project:
+
+**Data**
+: Ground truth is the fuel of any HTR system. Quality matters more than quantity: 50 carefully transcribed pages outperform 500 inconsistent ones.
+
+**Ground Truth**
+: The manually verified, authoritative transcription of a set of document images. Defines what "correct" means for a given model.
+
+**Training**
+: The process of adjusting a model's parameters so that its output matches the ground truth. For most humanities projects this means *fine-tuning* an existing base model on project-specific material, not training from scratch.
+
+**Epistemological decisions**
+: Every transcription encodes choices — what counts as a character, whether abbreviations are expanded, how diacritics are handled, what Unicode codepoints represent which glyphs. These are not technical details but scholarly decisions that shape what the resulting texts can and cannot be used for.
+
+→ Background reading: [Introduction → Transcription Policies](../../introduction/index.qmd#transcription-policies)
+
+### Interactive Transcription Environments (ITEs) {#ites}
+
+**What is an ITE?**
+: A web-based platform that supports the full HTR workflow in a graphical interface: image import, layout annotation, transcription, model training, and export. ITEs make HTR accessible without requiring command-line expertise.
+
+**eScriptorium**
+: Open-source (MIT), self-hostable, built on the Kraken engine. All models and data remain under the researcher's control. The platform of choice for open-science and reproducibility-focused projects.
+→ [eScriptorium section](../../escriptorium/index.qmd)
+
+**Transkribus**
+: Commercial (freemium), cloud-hosted, proprietary engine (PyLaia). Large pre-existing model library and a polished interface. Credits-based pricing for production transcription.
+
+### How to Use eScriptorium {#howto-escriptorium}
+
+A live demonstration and guided hands-on covering:
+
+1. **Import** — uploading images or an IIIF manifest
+2. **Segmentation** — running the default segmentation model; correcting baselines in the graphical editor
+3. **Transcription** — applying an existing model; editing transcriptions in the line panel
+4. **Training** — starting a fine-tuning run from corrected ground truth
+5. **Export** — downloading ALTO XML, PAGE XML, or plain text
+
+Participants follow along on the workshop instance at [escriptorium.fr](https://escriptorium.fr) (account registration required in advance).
+
+→ Detailed guide: [eScriptorium → The eScriptorium Workflow](../../escriptorium/index.qmd#the-escriptorium-workflow)
+
+### eScriptorium vs. Transkribus {#comparison}
+
+| | eScriptorium | Transkribus |
+|---|---|---|
+| License | Open source (MIT) | Proprietary |
+| Hosting | Self-hosted or institutional | Cloud |
+| Engine | Kraken | PyLaia |
+| Models | Open, exportable | Platform-locked |
+| Cost | Free (infra cost only) | Free tier + credits |
+| Best for | Reproducibility, open models | Rapid start, large model library |
+
+### Business Models, Open Science, and HTR-United {#open-science}
+
+A brief framing of why platform choice is a scholarly decision as well as a technical one:
+
+- **Data sovereignty:** who owns your ground truth and your trained model?
+- **Reproducibility:** can another researcher exactly reproduce your transcription pipeline in five years?
+- **Community infrastructure:** [HTR-United](../../models/htr-united/index.qmd) as the shared catalogue and standard for open HTR data and models
+
+→ [HTR-United section](../../models/htr-united/index.qmd)
+
+---
+
+## Session 2 — Afternoon {#session-2}
+
+**14:15–16:15 · Sangren Hall 1720**
+
+| Time | Duration | Topic | Resources |
+|---|---|---|---|
+| 14:15 | 30 min | [Test your own material](#test-own) | [eScriptorium](../../escriptorium/index.qmd) |
+| 14:45 | 20 min | [Show your results](#show-results) | — |
+| 15:05 | 20 min | [Introduction to VLMs and command-line tools](#vlms-cli) | [VLMs](../../modern-approaches/vlms/index.qmd), [TrOCR](../../modern-approaches/trocr/index.qmd) |
+| 15:25 | 20 min | [Developing workflows and identifying crucial decisions](#workflows) | — |
+| 15:45 | 30 min | [Questions and inputs](#questions) | — |
+
+### Test Your Own Material {#test-own}
+
+Participants apply what they learned in the morning to their own scanned images in eScriptorium:
+
+- Upload 2–5 pages of their own manuscript or archival material
+- Run segmentation and check/correct the detected baselines
+- Apply an appropriate pre-trained model (recommended starting points below)
+- Review the output and estimate CER visually
+
+**Recommended starting models by material type:**
+
+| Material | Recommended model |
+|---|---|
+| Latin or French medieval manuscript | [CATMuS Medieval 1.6.0](../../models/open-source/index.qmd#catmus-medieval-160) |
+| Documentary / charters | [TRIDIS v2](../../models/open-source/index.qmd#tridis-v1--v2) |
+| Medieval Hebrew | [BiblIA family](../../models/open-source/index.qmd#biblia-family) |
+| Greek minuscule | [Meleagre / GreekHTR](../../models/open-source/index.qmd#meleagre-nfd-finetuned) |
+| Middle High German (Gothic) | [Inzigkofen models](../../models/open-source/index.qmd#middle-high-german-models-inzigkofen) |
+
+### Show Your Results {#show-results}
+
+A brief show-and-tell: participants share one page of their transcription output with the group. Discussion points:
+
+- What worked well? Where did the model struggle?
+- What kind of errors appear most frequently — OCR noise, abbreviation confusion, unusual letterforms?
+- What would need to happen to improve the results — more ground truth, a different base model, manual correction?
+
+### Introduction to VLMs and Command-Line Tools {#vlms-cli}
+
+A conceptual and practical introduction to the tools beyond ITEs:
+
+**Vision Language Models (VLMs)**
+: Large multimodal models (GPT-4o, Gemini, Llama) that can transcribe text from images in a zero-shot prompt. Flexible but inconsistent; best for exploration or low-resource scripts with no training data available.
+→ [VLMs section](../../modern-approaches/vlms/index.qmd)
+
+**TrOCR**
+: Microsoft's transformer-based OCR model, available via Hugging Face Transformers. Requires Python scripting to use but integrates well with NLP pipelines.
+→ [TrOCR section](../../modern-approaches/trocr/index.qmd)
+
+**Kraken command line**
+: All eScriptorium actions can be performed programmatically via the Kraken CLI, enabling batch processing, scripted training, and integration into larger digital workflows.
+
+```bash
+# Apply a model to a folder of images
+for img in pages/*.jpg; do
+  kraken -i "$img" "${img%.jpg}.txt" ocr -m catmus-medieval.mlmodel
+done
+```
+
+### Developing Workflows and Identifying Crucial Decisions {#workflows}
+
+A structured group discussion on what a realistic ATR workflow looks like for participants' own projects. Key questions:
+
+1. **How much ground truth do I need?** — Rule of thumb: 20–50 pages for a usable fine-tune; 100+ for a strong domain model.
+2. **Which transcription policy?** — Decide before you start annotating; changing it later invalidates all existing ground truth.
+3. **Fine-tune or train from scratch?** — Almost always fine-tune. A strong base model (CATMuS, TRIDIS) dramatically reduces the data requirement.
+4. **How do I validate quality?** — Hold out 10% of pages as a test set; report CER on that set, not on the training data.
+5. **Where do I share my model and data?** — Zenodo for archival DOIs; HTR-United for discoverability; eScriptorium for immediate reuse within a project.
+
+### Questions and Inputs {#questions}
+
+Open floor for questions, follow-up discussion, and practical next steps. Topics that often arise:
+
+- How to get access to eScriptorium for my institution
+- How to find collaborators or existing ground truth for my script
+- How to cite ATR-produced transcriptions in a scholarly publication
+- What to do when no pre-trained model exists for my material
+
+---
+
+## Preparation for Participants
+
+To get the most out of the workshop:
+
+- **Create an account** at [escriptorium.fr](https://escriptorium.fr) before the session
+- **Bring 5–10 scanned pages** of your own manuscript material (JPEG or PNG, ideally 300+ DPI)
+- **Read in advance** (optional but helpful): [Introduction to ATR](../../introduction/index.qmd) and the [eScriptorium section](../../escriptorium/index.qmd)
+- **Take the Quiz** to check your understanding beforehand: [Quiz](../../quiz/index.qmd)
