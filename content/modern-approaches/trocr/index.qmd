@@ -89,7 +89,97 @@ TrOCR can be fine-tuned on historical manuscripts with moderate amounts of data.
 3. **Fine-tune:** Typically 5,000–20,000 line images are sufficient for reasonable results; more is always better
 4. **Evaluate:** Compute CER against a held-out test set
 
-Community fine-tuned TrOCR models for specific historical collections are increasingly available on Hugging Face (search for `trocr historical`).
+Community fine-tuned TrOCR models for specific historical collections are increasingly available on Hugging Face (search for `trocr historical`). The [dh-unibe](#dh-unibe-models) collection below is a good example from a digital humanities lab context.
+
+## DH Bern (dh-unibe) Models {#dh-unibe-models}
+
+The Digital Humanities Lab at the University of Bern publishes several TrOCR fine-tunes on Hugging Face under the [dh-unibe](https://huggingface.co/dh-unibe) organisation. All four public HTR models below are MIT-licensed and loadable with the standard Transformers snippet above — just swap in the model ID.
+
+::: {.model-card}
+#### [trocr-kurrent](https://huggingface.co/dh-unibe/trocr-kurrent)
+
+German Kurrent handwriting from the **19th century**.
+
+::: {.model-meta}
+[dh-unibe/trocr-kurrent]{.model-badge}
+[MIT]{.model-badge}
+[333.9 M params]{.model-badge}
+[German · 19th c.]{.model-badge .lang}
+[6.1K downloads]{.model-badge .metric}
+[DOI 10.57967/hf/0442]{.model-badge}
+:::
+
+Fine-tuned on `microsoft/trocr-base-handwritten`. The go-to model for 19th-century German administrative and personal correspondence in Kurrent script.
+
+```python
+processor = TrOCRProcessor.from_pretrained("dh-unibe/trocr-kurrent")
+model = VisionEncoderDecoderModel.from_pretrained("dh-unibe/trocr-kurrent")
+```
+:::
+
+::: {.model-card}
+#### [trocr-kurrent-XVI-XVII](https://huggingface.co/dh-unibe/trocr-kurrent-XVI-XVII)
+
+German Kurrent and early modern German scripts from the **16th–18th century**.
+
+::: {.model-meta}
+[dh-unibe/trocr-kurrent-XVI-XVII]{.model-badge}
+[MIT]{.model-badge}
+[333.9 M params]{.model-badge}
+[German · 16th–18th c.]{.model-badge .lang}
+[9.1K downloads]{.model-badge .metric}
+[DOI 10.57967/hf/0441]{.model-badge}
+:::
+
+The most-downloaded model in the collection. Covers the earlier Kurrent and chancery hand period, making it complementary to `trocr-kurrent` for longitudinal corpora spanning the early modern era.
+
+```python
+processor = TrOCRProcessor.from_pretrained("dh-unibe/trocr-kurrent-XVI-XVII")
+model = VisionEncoderDecoderModel.from_pretrained("dh-unibe/trocr-kurrent-XVI-XVII")
+```
+:::
+
+::: {.model-card}
+#### [trocr-medieval-escriptmask](https://huggingface.co/dh-unibe/trocr-medieval-escriptmask)
+
+Multi-language **medieval** manuscripts (German, French, Latin, Dutch).
+
+::: {.model-meta}
+[dh-unibe/trocr-medieval-escriptmask]{.model-badge}
+[MIT]{.model-badge}
+[333.9 M params]{.model-badge}
+[German · French · Latin · Dutch]{.model-badge .lang}
+[DOI 10.57967/hf/1436]{.model-badge}
+:::
+
+Trained on eScriptorium-annotated medieval material across four languages. The name references the eScriptorium masking approach used during training to improve robustness to layout noise. Useful as a broad starting point for Western medieval manuscripts before committing to a domain-specific fine-tune.
+
+```python
+processor = TrOCRProcessor.from_pretrained("dh-unibe/trocr-medieval-escriptmask")
+model = VisionEncoderDecoderModel.from_pretrained("dh-unibe/trocr-medieval-escriptmask")
+```
+:::
+
+::: {.model-card}
+#### [trocr-essoins-middle-latin](https://huggingface.co/dh-unibe/trocr-essoins-middle-latin)
+
+**Medieval Latin legal texts** in Anglicana script (English common law records).
+
+::: {.model-meta}
+[dh-unibe/trocr-essoins-middle-latin]{.model-badge}
+[MIT]{.model-badge}
+[558.2 M params]{.model-badge}
+[Latin · Medieval]{.model-badge .lang}
+[DOI 10.57967/hf/4634]{.model-badge}
+:::
+
+The largest model in the set (558 M parameters — large-scale encoder). Fine-tuned on the [`digital-history-bielefeld/image-text_anglicana-legal-texts`](https://huggingface.co/datasets/digital-history-bielefeld/image-text_anglicana-legal-texts) dataset, using [`magistermilitum/tridis_HTR`](https://huggingface.co/magistermilitum/tridis_HTR) as the base rather than a standard TrOCR checkpoint. Suited for English legal records (plea rolls, essoins) in 13th–14th century Anglicana.
+
+```python
+processor = TrOCRProcessor.from_pretrained("dh-unibe/trocr-essoins-middle-latin")
+model = VisionEncoderDecoderModel.from_pretrained("dh-unibe/trocr-essoins-middle-latin")
+```
+:::
 
 ## TrOCR vs. Kraken: When to Use Which?
 
