@@ -1,0 +1,14 @@
+{
+  "name": "atr",
+  "description": "Teaching resource for Automated Text Recognition.",
+  "author": "Tobias Hodel",
+  "license": "AGPL-3.0",
+  "scripts": {
+    "check": "prettier --ignore-path .gitignore --check . '!{node_modules,_site,.quarto}'",
+    "format": "prettier --ignore-path .gitignore --write . '!{node_modules,_site,.quarto}'"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
+  "type": "module"
+}

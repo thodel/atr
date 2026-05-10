@@ -1,0 +1,120 @@
+---
+title: "TrOCR"
+description: "Microsoft's transformer-based OCR model — architecture, pre-training strategy, fine-tuning, and applicability to historical documents."
+---
+
+## What is TrOCR?
+
+**TrOCR** (Transformer-based Optical Character Recognition) is a sequence-to-sequence model introduced by Microsoft Research in 2021. Unlike traditional OCR/HTR pipelines — which combine a CNN feature extractor with an LSTM and CTC decoder — TrOCR uses a **pure transformer encoder-decoder architecture**, applying the same self-attention mechanism that transformed NLP to the text recognition task.
+
+The key innovation is treating text recognition as an **image-to-text generation problem**: the encoder processes the image, and the decoder autoregressively generates the output character sequence token by token.
+
+## Architecture
+
+TrOCR consists of two pre-trained transformer components connected in an encoder-decoder configuration:
+
+```
+[Line image] → [Image Encoder] → [Text Decoder] → [Token sequence]
+```
+
+### Image Encoder
+
+TrOCR uses **BEiT** (Bidirectional Encoder representation from Image Transformers) as its visual backbone. BEiT is a Vision Transformer (ViT) pre-trained with a masked image modeling objective analogous to BERT's masked language modeling. The line image is split into fixed 16×16 pixel patches, which are linearly embedded and processed by the transformer encoder.
+
+Alternatively, DeiT (Data-efficient Image Transformers) is used in the base-sized variants.
+
+### Text Decoder
+
+The decoder is initialized from **RoBERTa** (for English/Latin-script models) or from multilingual BERT variants. It generates output tokens using standard autoregressive decoding with cross-attention over the encoder's representations.
+
+### Why this matters for HTR
+
+In traditional CTC-based models, the output length is tied to the input length through a fixed alignment. The autoregressive decoder in TrOCR can generate output sequences of any length independent of the image width, making it more flexible for:
+
+- **Ligatures and abbreviations** — a single glyph in the image can map to multiple output characters
+- **Long words** — no alignment pressure encourages over-segmentation
+- **Context modeling** — the decoder's language model component can use context to resolve ambiguous characters
+
+## Pre-Training Strategy
+
+TrOCR is pre-trained in two stages:
+
+1. **Stage 1 — Visual pre-training:** The image encoder is pre-trained on large corpora of document images using masked image modeling (BEiT objective). This teaches the model low-level visual features relevant to text.
+
+2. **Stage 2 — Cross-modal pre-training:** The full encoder-decoder is trained on large collections of synthetic and real (printed + handwritten) text-image pairs. For the handwritten variants, the model is exposed to millions of handwriting samples (IAM, IAM-OnDB, CVL, etc.).
+
+This two-stage approach means TrOCR does not need to learn visual features from scratch during fine-tuning, making it remarkably data-efficient for new tasks.
+
+## Model Variants
+
+Microsoft released several model variants in the [microsoft/trocr](https://huggingface.co/microsoft) family on Hugging Face:
+
+| Model | Encoder | Decoder | Intended domain |
+|---|---|---|---|
+| `trocr-base-printed` | BEiT-base | RoBERTa-base | Printed text |
+| `trocr-large-printed` | BEiT-large | RoBERTa-large | Printed text |
+| `trocr-base-handwritten` | BEiT-base | RoBERTa-base | Handwritten English |
+| `trocr-large-handwritten` | BEiT-large | RoBERTa-large | Handwritten English |
+| `trocr-base-stage1` | BEiT-base | MiniLM | Stage-1 checkpoint for fine-tuning |
+
+The `stage1` checkpoint is intended as a fine-tuning base when the target domain differs substantially from the standard handwritten or printed tasks.
+
+## Using TrOCR via Hugging Face Transformers
+
+TrOCR integrates cleanly with the 🤗 Transformers library:
+
+```python
+from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+from PIL import Image
+
+processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
+model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+
+image = Image.open("line.png").convert("RGB")
+pixel_values = processor(images=image, return_tensors="pt").pixel_values
+
+generated_ids = model.generate(pixel_values)
+text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+print(text)
+```
+
+Fine-tuning for a new script uses standard Hugging Face `Trainer` with a custom dataset of `(image, transcription)` pairs.
+
+## Fine-Tuning for Historical Documents
+
+TrOCR can be fine-tuned on historical manuscripts with moderate amounts of data. A practical workflow:
+
+1. **Prepare data:** Export line images and ground-truth transcriptions from eScriptorium (or any ALTO/PAGE XML source)
+2. **Choose a base checkpoint:** `trocr-base-stage1` if your script is very different from modern handwriting; `trocr-base-handwritten` for Western scripts with available ground truth
+3. **Fine-tune:** Typically 5,000–20,000 line images are sufficient for reasonable results; more is always better
+4. **Evaluate:** Compute CER against a held-out test set
+
+Community fine-tuned TrOCR models for specific historical collections are increasingly available on Hugging Face (search for `trocr historical`).
+
+## TrOCR vs. Kraken: When to Use Which?
+
+| Criterion | TrOCR | Kraken (eScriptorium) |
+|---|---|---|
+| **Ecosystem** | Hugging Face / PyTorch | eScriptorium / Kraken |
+| **Architecture** | Transformer enc-dec (autoregressive) | LSTM + CTC (or transformer heads) |
+| **Fine-tuning complexity** | Python scripting required | GUI in eScriptorium |
+| **Multilingual support** | Limited (model-dependent) | Strong (Unicode NFD) |
+| **Historical script community** | Growing | Well-established |
+| **Reproducibility (FAIR)** | Good (HF model cards) | Good (Zenodo + HTR-United) |
+| **Best for** | Research, integration into NLP pipelines | Humanities projects, archival digitization |
+
+::: {.tip-box}
+**For most digital humanities projects starting today:** eScriptorium/Kraken with a CATMuS fine-tune remains the most frictionless path. TrOCR becomes attractive when you need tight integration with Hugging Face pipelines, want to leverage transformer language model capabilities, or are working with a collection for which good TrOCR fine-tunes already exist on Hugging Face.
+:::
+
+## Limitations
+
+- **Script coverage:** The pre-trained models are English-centric. Non-Latin scripts require fine-tuning from scratch or from stage-1 checkpoints.
+- **Line-level input:** Like Kraken, TrOCR operates on pre-segmented text lines. You still need a separate layout analysis step.
+- **Decoding cost:** Autoregressive decoding is slower than CTC beam search, which matters at scale.
+- **Abbreviations:** The decoder's language model bias can cause it to "normalize" or "expand" abbreviations that should be transcribed diplomatically.
+
+## Key References
+
+- Li, M. et al. (2023). TrOCR: Transformer-based optical character recognition with pre-trained models. *AAAI 2023*. [arXiv:2109.10282](https://arxiv.org/abs/2109.10282)
+- Hugging Face model hub: <https://huggingface.co/microsoft/trocr-base-handwritten>

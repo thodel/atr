@@ -1,0 +1,161 @@
+---
+title: "Literature"
+description: "Key readings from the Zotero group Automated Text Recognition, searchable and organized by year."
+toc: false
+---
+
+This bibliography is drawn from the public Zotero group [**Automated Text Recognition**](https://www.zotero.org/groups/4971878/automated_text_recognition) (group ID: 4971878). Items are loaded live from the Zotero API and grouped by year.
+
+```{=html}
+<input
+  id="zotero-search"
+  type="search"
+  placeholder="Search titles, authors, or publications…"
+  aria-label="Search bibliography"
+/>
+
+<div id="zotero-loading">Loading bibliography…</div>
+<div id="zotero-list"></div>
+
+<script>
+const ZOTERO_GROUP = "4971878";
+const API_BASE = "https://api.zotero.org/groups/" + ZOTERO_GROUP;
+
+function formatAuthors(creators) {
+  if (!creators || creators.length === 0) return "";
+  const names = creators
+    .filter(c => c.creatorType === "author" || c.creatorType === "editor")
+    .map(c => {
+      if (c.name) return c.name;
+      const parts = [];
+      if (c.lastName) parts.push(c.lastName);
+      if (c.firstName) parts.push(c.firstName.charAt(0) + ".");
+      return parts.join(", ");
+    });
+  if (names.length === 0) return "";
+  if (names.length <= 3) return names.join("; ");
+  return names.slice(0, 3).join("; ") + " et al.";
+}
+
+function formatYear(dateStr) {
+  if (!dateStr) return "n.d.";
+  const m = dateStr.match(/\b(\d{4})\b/);
+  return m ? m[1] : "n.d.";
+}
+
+function getVenue(item) {
+  return item.publicationTitle ||
+    item.bookTitle ||
+    item.proceedingsTitle ||
+    item.journalAbbreviation ||
+    item.publisher ||
+    "";
+}
+
+function renderItem(item) {
+  const d = item.data;
+  const authors = formatAuthors(d.creators);
+  const year = formatYear(d.date);
+  const venue = getVenue(d);
+  const doi = d.DOI ? `https://doi.org/${d.DOI}` : d.url || null;
+  const title = d.title || "(no title)";
+
+  return `
+    <li class="zotero-item">
+      <p class="zotero-title">${doi
+        ? `<a href="${doi}" target="_blank" rel="noopener">${title}</a>`
+        : title
+      }</p>
+      <p class="zotero-meta">
+        ${authors ? authors + ". " : ""}${year}${venue ? ". <em>" + venue + "</em>" : ""}${d.DOI ? ". DOI: " + d.DOI : ""}
+      </p>
+    </li>`;
+}
+
+function groupByYear(items) {
+  const groups = {};
+  items.forEach(item => {
+    const y = formatYear(item.data.date);
+    if (!groups[y]) groups[y] = [];
+    groups[y].push(item);
+  });
+  return groups;
+}
+
+function renderList(items) {
+  const container = document.getElementById("zotero-list");
+  if (items.length === 0) {
+    container.innerHTML = "<p>No items match your search.</p>";
+    return;
+  }
+  const groups = groupByYear(items);
+  const years = Object.keys(groups).sort((a, b) => {
+    if (a === "n.d.") return 1;
+    if (b === "n.d.") return -1;
+    return parseInt(b) - parseInt(a);
+  });
+
+  container.innerHTML = years.map(y => `
+    <div class="zotero-year-group">
+      <h3>${y}</h3>
+      <ul id="zotero-list" style="list-style:none;padding:0;margin:0">
+        ${groups[y].map(renderItem).join("")}
+      </ul>
+    </div>
+  `).join("");
+}
+
+async function fetchAll() {
+  const loading = document.getElementById("zotero-loading");
+  let allItems = [];
+  let start = 0;
+  const limit = 100;
+
+  try {
+    while (true) {
+      const url = `${API_BASE}/items?format=json&limit=${limit}&start=${start}&sort=date&direction=desc&v=3&itemType=-attachment`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const items = await res.json();
+      if (items.length === 0) break;
+      allItems = allItems.concat(items.filter(i => i.data.title));
+      if (items.length < limit) break;
+      start += limit;
+    }
+
+    loading.style.display = "none";
+    window._zoteroAll = allItems;
+    renderList(allItems);
+  } catch (err) {
+    loading.innerHTML = `<p>Could not load bibliography. <a href="https://www.zotero.org/groups/4971878/automated_text_recognition" target="_blank">View directly on Zotero →</a></p>`;
+    console.error(err);
+  }
+}
+
+document.getElementById("zotero-search").addEventListener("input", function () {
+  const q = this.value.toLowerCase().trim();
+  if (!window._zoteroAll) return;
+  if (!q) {
+    renderList(window._zoteroAll);
+    return;
+  }
+  const filtered = window._zoteroAll.filter(item => {
+    const d = item.data;
+    const haystack = [
+      d.title || "",
+      formatAuthors(d.creators),
+      getVenue(d),
+      formatYear(d.date)
+    ].join(" ").toLowerCase();
+    return haystack.includes(q);
+  });
+  renderList(filtered);
+});
+
+fetchAll();
+</script>
+```
+
+---
+
+Browse the full group directly at [zotero.org/groups/4971878/automated_text_recognition](https://www.zotero.org/groups/4971878/automated_text_recognition).

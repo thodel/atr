@@ -1,0 +1,98 @@
+project:
+  type: website
+
+website:
+  title: "Automated Text Recognition"
+  favicon: logo.png
+  open-graph: true
+  twitter-card: true
+  site-url: https://thodel.github.io/atr/
+  repo-url: https://github.com/thodel/atr/
+  issue-url: https://github.com/thodel/atr/issues/new/choose
+  repo-actions: [edit, issue]
+  page-navigation: true
+  bread-crumbs: true
+  back-to-top-navigation: true
+  search:
+    show-item-context: true
+    type: overlay
+  navbar:
+    title: "ATR"
+    logo: logo.png
+    logo-alt: "ATR Teaching Resource"
+    tools:
+      - icon: github
+        url: https://github.com/thodel/atr/
+    left:
+      - text: "Introduction"
+        href: content/introduction/index.qmd
+      - text: "eScriptorium"
+        href: content/escriptorium/index.qmd
+      - text: "Models"
+        menu:
+          - text: "Open-Source Models"
+            href: content/models/open-source/index.qmd
+          - text: "HTR-United"
+            href: content/models/htr-united/index.qmd
+      - text: "Modern Approaches"
+        menu:
+          - text: "TrOCR"
+            href: content/modern-approaches/trocr/index.qmd
+          - text: "Vision Language Models"
+            href: content/modern-approaches/vlms/index.qmd
+      - text: "Quiz"
+        href: content/quiz/index.qmd
+      - text: "Literature"
+        href: content/literature/index.qmd
+  page-footer:
+    left: "[Automated Text Recognition Teaching Resource](https://thodel.github.io/atr/)"
+    center: "[GitHub](https://github.com/thodel/atr) · CC BY 4.0"
+    right: "[Introduction](/content/introduction/index.qmd) · [Models](/content/models/open-source/index.qmd) · [Quiz](/content/quiz/index.qmd)"
+  sidebar:
+    logo: ""
+    style: "docked"
+    collapse-level: 1
+    contents:
+      - text: "Home"
+        href: /
+      - text: "Introduction"
+        href: content/introduction/index.qmd
+      - text: "eScriptorium"
+        href: content/escriptorium/index.qmd
+      - section: "Models"
+        contents:
+          - text: "Open-Source Models"
+            href: content/models/open-source/index.qmd
+          - text: "HTR-United"
+            href: content/models/htr-united/index.qmd
+      - section: "Modern Approaches"
+        contents:
+          - text: "TrOCR"
+            href: content/modern-approaches/trocr/index.qmd
+          - text: "Vision Language Models"
+            href: content/modern-approaches/vlms/index.qmd
+      - text: "Quiz"
+        href: content/quiz/index.qmd
+      - text: "Literature"
+        href: content/literature/index.qmd
+
+format:
+  html:
+    toc: true
+    toc-location: right
+    theme:
+      - brand
+      - custom.scss
+    code-copy: true
+    code-overflow: wrap
+    citations-hover: true
+    crossrefs-hover: true
+    css: styles.css
+    link-external-icon: true
+    link-external-newwindow: true
+    page-layout: full
+    license: CC BY 4.0
+
+freeze: auto
+
+editor: visual

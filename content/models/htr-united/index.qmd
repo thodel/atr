@@ -1,0 +1,150 @@
+---
+title: "HTR-United"
+description: "The community initiative for sharing HTR training data and models under standardized metadata."
+---
+
+## What is HTR-United?
+
+**HTR-United** is an open community initiative that provides a centralized catalogue and set of standards for sharing Handwritten Text Recognition (HTR) and OCR training datasets and models. It was founded to address a chronic problem in the field: researchers routinely produce high-quality training data and models for specific projects, then publish them in incompatible formats under unclear licenses, making reuse difficult or impossible.
+
+HTR-United is not a platform but a **standard plus a catalogue**:
+
+- A metadata schema (HUMU — HTR-United Metadata Updater) for describing datasets and models in a machine-readable way
+- A GitHub organization hosting curated repositories of ground-truth data
+- A searchable catalogue website at [htr-united.github.io](https://htr-united.github.io/)
+
+::: {.tip-box}
+**HTR-United is the primary discovery layer for open HTR datasets.** If you are looking for training data or ground truth for a specific script, language, or period, the HTR-United catalogue is the first place to search.
+:::
+
+## The Problem HTR-United Solves
+
+Before HTR-United, researchers publishing HTR data faced no standard for:
+
+- **File formats** — PAGE XML, ALTO XML, or plain text `.gt.txt` files alongside images
+- **Metadata** — what script, language, time period, repository, license, and transcription policy applied
+- **Versioning** — how to track updates and cite a specific version
+- **Discoverability** — data scattered across personal GitHub repos, Zenodo deposits, and project websites
+
+HTR-United provides a common vocabulary and schema that makes datasets findable, comparable, and citable.
+
+## The HUMU Metadata Schema
+
+Each dataset in the HTR-United catalogue is described by a `htr-united.yml` file following the **HUMU schema**. Key fields include:
+
+```yaml
+schema: https://htr-united.github.io/schema.json
+version: "1.0"
+title: "My HTR Dataset"
+url: https://github.com/example/my-dataset
+authors:
+  - name: "Smith, Jane"
+    orcid: "0000-0000-0000-0000"
+description: "Ground truth for 15th-century Latin charters."
+language:
+  - iso: la
+    label: Latin
+script:
+  - iso: Latn
+    label: Latin
+script-type: only-manuscript
+time:
+  notBefore: "1400"
+  notAfter: "1500"
+license:
+  - name: CC BY 4.0
+    url: https://creativecommons.org/licenses/by/4.0/
+transcription-guidelines: "Diplomatic; abbreviations not expanded."
+volume:
+  - metric: lines
+    count: 5000
+```
+
+This structured metadata enables automatic aggregation across repositories and powers the catalogue's search interface.
+
+## The HTR-United Catalogue
+
+The [htr-united.github.io](https://htr-united.github.io/) website provides:
+
+- A **searchable table** of all registered datasets, filterable by language, script, time period, and license
+- **Statistics** on the total volume of ground truth available per language and script
+- Direct links to each dataset's GitHub repository and Zenodo archive
+
+As of 2025, the catalogue contains several hundred datasets covering scripts from Latin and Greek to Hebrew, Arabic, and vernacular European hands.
+
+## Ground Truth Formats
+
+HTR-United datasets follow one of two standard formats:
+
+### Kraken / eScriptorium format
+
+Line images stored as cropped PNGs paired with ground truth text files:
+
+```
+line_001.png
+line_001.gt.txt
+line_002.png
+line_002.gt.txt
+```
+
+This format is directly usable with `ketos train` (Kraken's training command).
+
+### PAGE XML / ALTO XML
+
+Full-page images with structural annotations in PAGE or ALTO XML. These can be compiled into Kraken training format using `ketos compile`.
+
+## Using HTR-United Data with Kraken
+
+Once you have downloaded a dataset from HTR-United, training a Kraken model is straightforward:
+
+```bash
+# Compile PAGE XML ground truth into Kraken binary format
+ketos compile -f alto -o train.arrow *.xml
+
+# Train a new model (or fine-tune from a base)
+ketos train \
+  --load base_model.mlmodel \
+  --resize new \
+  -o my_model \
+  train.arrow
+```
+
+The `--resize new` flag is important when fine-tuning: it allows the model to learn new characters not present in the base model's training data.
+
+## Linking Models to Data
+
+One of HTR-United's key goals is to connect published models to their training data, enabling reproducibility. When a model is published on Zenodo alongside an HTR-United dataset, reviewers and future users can:
+
+1. Inspect exactly what data was used
+2. Reproduce the training run
+3. Evaluate the model on held-out subsets
+
+The [Inzigkofen models](../open-source/index.qmd) and the [OICEN-HTR bundle](../open-source/index.qmd) are good examples of this practice done well.
+
+## Transcription Policy Documentation
+
+HTR-United encourages — but does not yet enforce — explicit documentation of transcription policies. The CATMuS project publishes its guidelines at [catmus-medieval.github.io](https://catmus-medieval.github.io/) and the MiDRASH project similarly documents its annotation rules on Zenodo. This matters enormously: two datasets labeled "diplomatic" may encode abbreviations in entirely different ways.
+
+::: {.tip-box}
+**Before fine-tuning with external data:** Always check the transcription policy of any HTR-United dataset you plan to combine with your own ground truth. Mixing graphematic and semi-diplomatic data in the same training set typically degrades model quality.
+:::
+
+## Contributing to HTR-United
+
+To register your dataset:
+
+1. Structure your data as a GitHub repository with line images and `.gt.txt` files (or PAGE/ALTO XML)
+2. Add a `htr-united.yml` metadata file to the root of the repository
+3. Open a pull request against the [HTR-United catalogue repository](https://github.com/HTR-United/htr-united)
+
+The HUMU validator checks your metadata file for schema compliance before the PR can be merged.
+
+## Key Links
+
+| Resource | URL |
+|---|---|
+| Catalogue website | <https://htr-united.github.io/> |
+| GitHub organization | <https://github.com/HTR-United> |
+| HUMU schema | <https://htr-united.github.io/schema.json> |
+| HUMU validator | <https://github.com/HTR-United/htr-united/tree/main/validator> |
+| CATMuS guidelines | <https://catmus-medieval.github.io/> |

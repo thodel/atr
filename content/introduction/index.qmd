@@ -1,0 +1,115 @@
+---
+title: "Introduction to Automated Text Recognition"
+description: "What is OCR and HTR? The recognition pipeline, evaluation metrics, and the challenges of historical documents."
+---
+
+## What is Automated Text Recognition?
+
+**Automated Text Recognition (ATR)** is the computational process of converting images of written or printed text into machine-readable characters. It encompasses two closely related but technically distinct tasks:
+
+- **OCR (Optical Character Recognition)** — recognition of printed, typeset text (books, newspapers, administrative forms)
+- **HTR (Handwritten Text Recognition)** — recognition of handwritten text, including historical manuscripts, letters, and documents
+
+Both tasks share the same fundamental pipeline but differ substantially in the degree of variability they must handle. A printed page from a 19th-century newspaper is relatively uniform; a medieval charter written by an individual scribe represents an entirely unique visual style.
+
+::: {.tip-box}
+**Why does the distinction matter?** OCR systems trained on printed text typically fail on handwriting. Dedicated HTR systems, trained on representative samples of a specific script or hand, are required for reliable results on historical manuscripts.
+:::
+
+## The Recognition Pipeline
+
+A standard ATR pipeline consists of four sequential stages:
+
+### 1. Image Acquisition
+
+The source material — a manuscript, a printed book, an archival document — is digitized, usually via flatbed scanner or overhead camera. Image quality (resolution, lighting, color depth) directly affects downstream recognition quality. A minimum of 300 DPI is recommended; 400–600 DPI is preferred for manuscripts with fine strokes.
+
+### 2. Layout Analysis (Segmentation)
+
+Before any text can be recognized, the system must identify *where* on the page text is located. This stage, called **layout analysis** or **segmentation**, involves:
+
+- **Region detection** — identifying text blocks, margins, decorations, and illustrations
+- **Baseline detection** — finding the imaginary line on which characters sit (essential for HTR)
+- **Line extraction** — cropping individual text lines for the recognizer
+
+Modern systems use deep learning (typically convolutional or transformer-based) for segmentation. The [SegmOnto](https://segmonto.github.io/) ontology provides a standardized vocabulary for labeling document regions.
+
+### 3. Text Recognition
+
+Each extracted text line is passed to the recognition model, which outputs a sequence of characters. Most modern HTR systems use a sequence-to-sequence architecture:
+
+- **CNN** — extracts visual features from the line image
+- **RNN / LSTM** — models the sequential character context
+- **CTC (Connectionist Temporal Classification)** — aligns the output sequence with the input without requiring character-level segmentation
+
+Newer approaches — such as [TrOCR](../modern-approaches/trocr/index.qmd) and [Vision Language Models](../modern-approaches/vlms/index.qmd) — replace recurrent layers with transformers, offering stronger long-range context modeling.
+
+### 4. Post-Processing
+
+Raw recognition output is rarely used directly. Common post-processing steps include:
+
+- **Spell checking / language model correction** — using n-gram or neural language models to correct likely misrecognitions
+- **Named entity recognition** — extracting persons, places, and dates from the recognized text
+- **Manual correction** — human review in platforms like eScriptorium or Transkribus
+
+## Evaluation Metrics
+
+Two standard metrics are used to measure recognition quality:
+
+### Character Error Rate (CER)
+
+$$\text{CER} = \frac{S + D + I}{N}$$
+
+where $S$ = substitutions, $D$ = deletions, $I$ = insertions (all at the character level), and $N$ = total number of characters in the reference transcription.
+
+A CER of 0.05 (5%) means approximately 1 error per 20 characters — roughly one error per word. For most scholarly applications, a CER below 5% is considered usable; below 2% is considered high quality.
+
+### Word Error Rate (WER)
+
+WER applies the same formula at the word level. Because a single character error can corrupt an entire word, WER is always ≥ CER and is more sensitive to isolated errors in long words.
+
+::: {.tip-box}
+**Interpreting CER in practice:** CER measures *distance* from a reference transcription, not absolute correctness. The same CER value can mean very different things depending on the transcription policy (diplomatic vs. normalized) and the language (agglutinative languages tend to have longer words, making individual errors cheaper in WER terms).
+:::
+
+## Challenges of Historical Documents
+
+Historical documents present a cluster of challenges not found in modern document recognition:
+
+| Challenge | Description |
+|---|---|
+| **Script diversity** | Hundreds of historical scripts (Gothic, Carolingian, Secretary hand, etc.), each requiring dedicated training data |
+| **Individual hands** | Within a single script type, every scribe writes differently |
+| **Physical degradation** | Fading ink, water damage, foxing, bleed-through, torn pages |
+| **Historical orthography** | Inconsistent spelling, abbreviations, special characters absent from Unicode |
+| **Layout complexity** | Marginalia, interlinear additions, rubrics, columns, tables |
+| **Low-resource languages** | Many historical languages have limited digitized text for language model support |
+
+## Transcription Policies
+
+Before training any model, a project must define its **transcription policy** — the rules governing how text is encoded. Key choices include:
+
+- **Diplomatic** — strict character-by-character rendering of what is visible, including abbreviations unexpanded
+- **Graphematic** — faithful to the graphic forms of characters but normalized at the Unicode level (e.g., using NFD decomposition)
+- **Semi-diplomatic** — abbreviations partially or contextually expanded
+- **Normalized** — orthographic regularization for easier text analysis
+
+Models trained on one transcription policy cannot reliably be applied to material requiring a different one. This is one of the most common sources of unexpected errors when reusing pre-trained models.
+
+## Tools and Platforms
+
+Two dominant platforms serve the research community today:
+
+| Platform | License | Engine | Key strength |
+|---|---|---|---|
+| **eScriptorium** | Open source (MIT) | Kraken | Full transparency, reproducibility, open models |
+| **Transkribus** | Freemium / commercial | PyLaia / custom | Mature ecosystem, large community, many pre-trained models |
+
+This resource focuses on the open-source stack — [eScriptorium](../escriptorium/index.qmd) and [Kraken](https://kraken.re/) — with dedicated sections on [open-source models](../models/open-source/index.qmd), [HTR-United](../models/htr-united/index.qmd), and modern approaches.
+
+## Further Reading
+
+- Mühlberger, G. et al. (2019). Transforming scholarship in the archives through handwritten text recognition. *Journal of Documentation*, 75(5).
+- Springmann, U., & Lüdeling, A. (2017). OCR of historical printings with an application to building diachronic corpora. *arXiv:1703.09550*.
+- Kiessling, B. et al. (2019). BADAM: A public dataset for baseline detection in Arabic-script manuscripts. *ICDAR*.
+- See the full [Literature](../literature/index.qmd) section for a searchable bibliography.

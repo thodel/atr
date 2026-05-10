@@ -1,0 +1,288 @@
+/**
+ * Font: Switzer by Jérémie Hornus via Fontshare
+ * https://www.fontshare.com/fonts/switzer
+ */
+@import url("https://api.fontshare.com/v2/css?f[]=switzer@100,200,300,400,500,600,700,800,900&display=swap");
+
+/* Quiz page styles */
+#quiz-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+#quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+#progress-bar-outer {
+  flex: 1;
+  background: #e4e6ea;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+#progress-bar-inner {
+  height: 100%;
+  background: var(--bs-primary, #1a5276);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+#q-counter {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5b6370;
+  white-space: nowrap;
+}
+
+#q-score {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--bs-primary, #1a5276);
+  white-space: nowrap;
+}
+
+#question-box {
+  background: var(--bs-primary, #1a5276);
+  color: #fff;
+  border-radius: 18px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+#question-box h2 {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+  line-height: 1.35;
+  color: #fff;
+  font-weight: 600;
+}
+
+#answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 560px) {
+  #answers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.answer-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.2s ease;
+  font-family: inherit;
+}
+
+.answer-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.answer-btn:disabled {
+  cursor: default;
+}
+
+.answer-btn.a {
+  background: #e21b3c;
+}
+.answer-btn.b {
+  background: #1368ce;
+}
+.answer-btn.c {
+  background: #26890c;
+}
+.answer-btn.d {
+  background: #e6a800;
+}
+
+.answer-btn .btn-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.answer-btn.correct {
+  outline: 4px solid #fff;
+  box-shadow: 0 0 0 6px rgba(0, 200, 80, 0.35);
+}
+
+.answer-btn.wrong {
+  opacity: 0.45;
+}
+
+.answer-btn.correct-reveal {
+  outline: 4px solid #fff;
+  box-shadow: 0 0 0 6px rgba(0, 200, 80, 0.35);
+}
+
+#feedback-box {
+  background: #f0f5fb;
+  border: 1px solid #d0daea;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+#feedback-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+#feedback-result {
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin: 0 0 6px 0;
+}
+
+#feedback-explanation {
+  font-size: 0.95rem;
+  color: #444;
+  margin: 0 0 16px 0;
+}
+
+#next-btn,
+#restart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: none;
+  background: var(--bs-primary, #1a5276);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+#next-btn:hover,
+#restart-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(26, 82, 118, 0.28);
+}
+
+#results-box {
+  background: var(--bs-primary, #1a5276);
+  color: #fff;
+  border-radius: 20px;
+  padding: 36px 32px;
+  text-align: center;
+}
+
+#results-box h2 {
+  color: #fff;
+  margin: 0 0 8px 0;
+  font-size: 1.8rem;
+}
+
+#results-score-big {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 12px 0;
+}
+
+#results-msg {
+  font-size: 1.1rem;
+  opacity: 0.88;
+  margin: 0 0 24px 0;
+}
+
+/* Zotero literature page */
+#zotero-loading {
+  color: #6a6f77;
+  font-size: 0.95rem;
+  padding: 20px 0;
+}
+
+#zotero-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.zotero-item {
+  border-bottom: 1px solid #e8eaed;
+  padding: 14px 0;
+}
+
+.zotero-item:last-child {
+  border-bottom: none;
+}
+
+.zotero-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #222;
+}
+
+.zotero-title a {
+  color: var(--bs-primary, #1a5276);
+}
+
+.zotero-meta {
+  font-size: 0.88rem;
+  color: #5b6370;
+  margin: 0;
+}
+
+.zotero-year-group {
+  margin: 28px 0 0 0;
+}
+
+.zotero-year-group h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--bs-primary, #1a5276);
+  border-bottom: 2px solid #e0e8f0;
+  padding-bottom: 6px;
+  margin: 0 0 8px 0;
+}
+
+#zotero-search {
+  width: 100%;
+  max-width: 480px;
+  padding: 10px 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 24px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#zotero-search:focus {
+  border-color: var(--bs-primary, #1a5276);
+  box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.12);
+}
