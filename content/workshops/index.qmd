@@ -1,0 +1,16 @@
+---
+title: "Workshops"
+description: "Hands-on workshops on Automated Text Recognition offered as part of this teaching resource."
+---
+
+This section collects materials and schedules for workshops on Automated Text Recognition. Each workshop page includes a detailed agenda, links to the relevant sections of this resource, and any supplementary handouts or slides.
+
+## Upcoming and Recent Workshops
+
+::: {.section-cards}
+<a href="dmsi-2026-kalamazoo/index.qmd" class="section-card">
+<div class="section-card-icon">🏛️</div>
+<h3>DMSI 2026 Kalamazoo</h3>
+<p>Introduction to Handwritten Text Recognition — Medieval Congress, Sangren Hall 1720, 13 May 2026.</p>
+</a>
+:::
