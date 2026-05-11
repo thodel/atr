@@ -41,7 +41,11 @@ website:
           - text: "Vision Language Models"
             href: content/modern-approaches/vlms/index.qmd
       - text: "Workshops"
-        href: content/workshops/index.qmd
+        menu:
+          - text: "Workshops"
+            href: content/workshops/index.qmd
+          - text: "DMSI 2026 Kalamazoo"
+            href: content/workshops/dmsi-2026-kalamazoo/index.qmd
       - text: "Quiz"
         href: content/quiz/index.qmd
       - text: "Literature"

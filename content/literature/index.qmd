@@ -4,6 +4,28 @@ description: "Key readings from the Zotero group Automated Text Recognition, sea
 toc: false
 ---
 
+## Forthcoming
+
+::: {.model-card}
+#### Schönhardt et al. — Automated Text Recognition for Historical Documents
+
+An introduction to ATR for historians and philologists, covering the full workflow from image acquisition through ground-truth annotation, model training, and output evaluation. Presents practical guidance for humanities researchers engaging with eScriptorium, Kraken, and related tools.
+
+::: {.model-meta}
+[Forthcoming · DHR]{.model-badge}
+[CC BY 4.0]{.model-badge}
+[Author proof, April 2026]{.model-badge}
+:::
+
+[Download preprint (PDF)](../resources/schonhardt-et-al-atr.pdf){.hero-cta .hero-cta-secondary}
+
+*Full citation details will be added upon publication.*
+:::
+
+---
+
+## Bibliography
+
 This bibliography is drawn from the public Zotero group [**Automated Text Recognition**](https://www.zotero.org/groups/4971878/automated_text_recognition) (group ID: 4971878). Items are loaded live from the Zotero API and grouped by year.
 
 ```{=html}
