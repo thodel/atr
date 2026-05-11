@@ -69,8 +69,8 @@ The current state-of-the-art generic base model for medieval Latin-script manusc
 A semi-diplomatic model optimized for documentary manuscripts — charters, registers, feudal books, and administrative records.
 
 ::: {.model-meta}
-[Zenodo: TRIDIS v2]{.model-badge}
-[Hugging Face mirror]{.model-badge}
+[Zenodo v1: 10.5281/zenodo.10788591](https://zenodo.org/records/10788591){.model-badge}
+[Zenodo v2: 10.5281/zenodo.13862096](https://zenodo.org/records/13862096){.model-badge}
 [Latin · Old French · Old Spanish]{.model-badge .lang}
 [v1: CER ~0.11–0.15 on external sets]{.model-badge .metric}
 :::
@@ -114,7 +114,7 @@ A broad Latin/Old French model from the CREMMA project (Corpus et Reconnaissance
 The mature CREMMA medieval model with a strong focus on Old French manuscripts from the 12th–15th century.
 
 ::: {.model-meta}
-[Zenodo · GitHub: HTR-United/cremma-medieval]{.model-badge}
+[Zenodo: 10.5281/zenodo.6669553](https://zenodo.org/records/6669553){.model-badge}
 [CC BY 4.0 / CC BY-SA 2.0 (check per artifact)]{.model-badge}
 [Old French]{.model-badge .lang}
 [95.30% accuracy]{.model-badge .metric}
@@ -155,7 +155,10 @@ A transparent, well-documented model for Anglo-Norman praegothica and gothic tex
 Four complementary models for medieval Hebrew manuscripts: one general model and three script-specialized variants for Ashkenazi, Italian, and Sephardi book hands.
 
 ::: {.model-meta}
-[Zenodo: BiblIA_01 + 3 sub-models]{.model-badge}
+[BiblIA\_01: 10.5281/zenodo.5468286](https://zenodo.org/records/5468286){.model-badge}
+[Ashkenazi\_01: 10.5281/zenodo.5468478](https://zenodo.org/records/5468478){.model-badge}
+[Italian\_01: 10.5281/zenodo.5468573](https://zenodo.org/records/5468573){.model-badge}
+[Sephardi\_01: 10.5281/zenodo.5468665](https://zenodo.org/records/5468665){.model-badge}
 [CC BY-SA 4.0 (check sofer_mahir repo for NC variant)]{.model-badge}
 [Hebrew · Aramaic]{.model-badge .lang}
 [~16 MB each]{.model-badge}
@@ -176,7 +179,7 @@ The [sofer_mahir](https://github.com/sitzikbs/sofer_mahir) repository also inclu
 A dedicated model for Cairo Geniza fragments, covering documentary and literary texts in multiple Jewish languages.
 
 ::: {.model-meta}
-[Zenodo: MiDRASH Geniza 01]{.model-badge}
+[Zenodo: 10.5281/zenodo.18732245](https://zenodo.org/records/18732245){.model-badge}
 [CC BY-NC-SA 4.0]{.model-badge}
 [23 MB]{.model-badge}
 [Hebrew · Judeo-Arabic · Jewish Babylonian Aramaic]{.model-badge .lang}
@@ -218,7 +221,7 @@ A narrow specialist model for one specific Byzantine Greek manuscript — Codex 
 A preview model for Byzantine Greek minuscule from the 9th to 12th century, trained on manuscripts from the Vatican Library and the Patristic Text Archive.
 
 ::: {.model-meta}
-[Zenodo: preview release]{.model-badge}
+[Zenodo: 10.5281/zenodo.15838142](https://zenodo.org/records/15838142){.model-badge}
 [CC BY-SA 4.0]{.model-badge}
 [20 MB]{.model-badge}
 [Ancient Greek]{.model-badge .lang}
@@ -240,7 +243,7 @@ A preview model for Byzantine Greek minuscule from the 9th to 12th century, trai
 A bundle of fine-tuned models for Old Icelandic and Old Norse manuscripts, all built on CATMuS Medieval 1.6.0 as base.
 
 ::: {.model-meta}
-[Zenodo: OICEN v0.1 / v0.2]{.model-badge}
+[Zenodo: 10.5281/zenodo.15389282](https://zenodo.org/records/15389282){.model-badge}
 [CC BY-SA 4.0]{.model-badge}
 [Old Icelandic / Old Norse]{.model-badge .lang}
 [Combined: 97.41% Char. / 91.42% Word accuracy]{.model-badge .metric}
@@ -265,14 +268,14 @@ An instructive example of how rapidly a hand-specific model overfits when traini
 A proof-of-concept FAIR-oriented release for Old Norse manuscripts, built on CATMuS Medieval.
 
 ::: {.model-meta}
-[Zenodo: Bifrost 0.1]{.model-badge}
+[HAL: hal-05088317](https://enc.hal.science/hal-05088317v2){.model-badge}
 [CC BY 4.0]{.model-badge}
-[16.4 MB]{.model-badge}
 [Old Norse]{.model-badge .lang}
 :::
 
 - **Training data:** Selected leaves from 2 manuscripts; test on 4 manuscripts
-- **Best use:** Community release demonstrating the CATMuS fine-tuning workflow for Old Norse; not yet benchmarked.
+- **Status:** Paper published November 2025 (HAL); standalone Zenodo model record not yet deposited as of May 2026.
+- **Best use:** Community release demonstrating the CATMuS fine-tuning workflow for Old Norse; not yet benchmarked at production scale.
 :::
 
 ---
@@ -285,7 +288,7 @@ A proof-of-concept FAIR-oriented release for Old Norse manuscripts, built on CAT
 Three single-hand models for 15th-century Gothic scripts from the manuscripts of the Augustinian canonesses in Inzigkofen (Staatsbibliothek zu Berlin).
 
 ::: {.model-meta}
-[Zenodo: package + individual DOIs]{.model-badge}
+[no public Zenodo record yet]{.model-badge}
 [CC BY 4.0]{.model-badge}
 [Middle High German]{.model-badge .lang}
 :::
