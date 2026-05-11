@@ -10,7 +10,7 @@ description: "The open-source annotation and transcription platform. Workflow, m
 Unlike Transkribus, eScriptorium is fully open source (MIT license), and all models produced with it can be exported, shared, and reused without restriction. It is the platform of choice for researchers who prioritize reproducibility and data sovereignty.
 
 ::: {.tip-box}
-**eScriptorium vs. Transkribus:** Both platforms offer layout analysis and HTR training. eScriptorium is open source and uses Kraken; Transkribus is commercial and uses PyLaia. eScriptorium is better for research projects requiring full control over training data and models; Transkribus has a larger pre-existing model library and a more polished user interface.
+**eScriptorium vs. Transkribus:** Both platforms offer layout analysis, HTR training, and HTR recognition. eScriptorium is open source and uses Kraken; Transkribus is driven by a cooperative (READ Coop) and uses PyLaia as well as TrOCR. eScriptorium is better for research projects requiring full control over training data and models; Transkribus has a larger pre-existing model library and a more polished user interface.
 :::
 
 ## Core Components
@@ -56,7 +56,7 @@ Once sufficient ground truth is available, a new HTR model can be trained direct
 | Architecture | LSTM + CTC | Default; transformer heads also available |
 
 ::: {.tip-box}
-**Fine-tuning vs. training from scratch:** For most historical document projects, fine-tuning a strong base model (such as [CATMuS Medieval](../models/open-source/index.qmd)) on 20–100 manually transcribed pages yields dramatically better results than training from scratch, especially when data is scarce.
+**Fine-tuning vs. training from scratch:** For most historical document projects, fine-tuning a strong base model (such as [CATMuS Medieval](../models/open-source/index.qmd)) on 20–100 manually transcribed pages yields better results than training from scratch, especially when data is scarce/expensive to produce.
 :::
 
 ### 5. Export
@@ -95,7 +95,7 @@ Several institutions run public or semi-public eScriptorium instances:
 |---|---|---|
 | EPHE (reference) | <https://escriptorium.fr/> | Registration required |
 | Scripta PSL | <https://escriptorium.psl.eu/> | Registration required |
-| University of Bern (DH) | Internal | Staff / project members |
+| Flow-Project/University of Bielefeld (in coop. with DH Bern) | <https://escriptorium.flow-project.net | Ask to be registered |
 
 ### Local Development
 
@@ -108,6 +108,8 @@ kraken -i page.jpg seg.json segment -bl
 # Recognize with a model
 kraken -i page.jpg output.txt ocr -m model.mlmodel
 ```
+
+Especially for training from scratch, this option is to be preferred.
 
 ## Key Resources
 
@@ -128,6 +130,5 @@ kraken -i page.jpg output.txt ocr -m model.mlmodel
 
 ## Citing eScriptorium
 
-> Kiessling, B., Stoekl Ben Ezra, D., & Miller, M. T. (2019). BADAM: A public dataset for baseline detection in Arabic-script manuscripts. In *Proceedings of the 5th International Workshop on Historical Document Imaging and Processing* (pp. 19–24). ACM.
 
 > Kiessling, B. (2023). *Kraken — an universal text recognizer for the humanities*. <https://kraken.re/>
