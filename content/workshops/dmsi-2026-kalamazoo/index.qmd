@@ -37,7 +37,7 @@ No prior technical experience is assumed. Participants are encouraged to bring t
 | 09:45 | 25 min | [ATR: Where are we at the moment?](#atr-state) | [Introduction](../../introduction/index.qmd) |
 | 10:10 | 15 min | [Round of introductions: ATR — where are you?](#introductions) | — |
 | 10:25 | 15 min | [Key concepts: data, ground truth, training, epistemological decisions](#key-concepts) | [Introduction → pipeline](../../introduction/index.qmd#the-recognition-pipeline) |
-| 10:40 | 15 min | [Interactive Transcription Environments (ITEs)](#ites) | [eScriptorium](../../escriptorium/index.qmd) |
+| 10:40 | 15 min | [Integrated Transcription Environments (ITEs)](#ites) | [eScriptorium](../../escriptorium/index.qmd) |
 | 10:55 | 25 min | [How to use eScriptorium](#howto-escriptorium) | [eScriptorium → workflow](../../escriptorium/index.qmd#the-escriptorium-workflow) |
 | 11:20 | 5 min | [eScriptorium vs. Transkribus](#comparison) | — |
 | 11:25 | 5 min | [Business models, open science, and HTR-United](#open-science) | [HTR-United](../../models/htr-united/index.qmd) |
@@ -81,10 +81,10 @@ Four foundational ideas that underpin every HTR project:
 
 → Background reading: [Introduction → Transcription Policies](../../introduction/index.qmd#transcription-policies)
 
-### Interactive Transcription Environments (ITEs) {#ites}
+### Integrated Transcription Environments (ITEs) {#ites}
 
 **What is an ITE?**
-: A web-based platform that supports the full HTR workflow in a graphical interface: image import, layout annotation, transcription, model training, and export. ITEs make HTR accessible without requiring command-line expertise.
+: A web-based platform that supports the full HTR workflow in a graphical interface: image import, layout annotation, transcription, model training, and export. ITEs (Integrated Transcription Environments) make HTR accessible without requiring command-line expertise.
 
 **eScriptorium**
 : Open-source (MIT), self-hostable, built on the Kraken engine. All models and data remain under the researcher's control. The platform of choice for open-science and reproducibility-focused projects.

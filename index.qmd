@@ -19,55 +19,38 @@ A teaching resource on OCR and HTR for historical documents — from classical p
 
 ::: {.section-cards}
 <a href="content/introduction/index.qmd" class="section-card">
-<div class="section-card-icon">📖</div>
 <h3>Introduction</h3>
 <p>What is OCR and HTR? The recognition pipeline, key metrics (CER/WER), and the challenges of historical documents.</p>
 </a>
-
 <a href="content/escriptorium/index.qmd" class="section-card">
-<div class="section-card-icon">🖊️</div>
 <h3>eScriptorium</h3>
 <p>The open-source annotation and transcription platform built on Kraken. Workflow, training, export, and further resources.</p>
 </a>
-
 <a href="content/models/open-source/index.qmd" class="section-card">
-<div class="section-card-icon">🗂️</div>
 <h3>Open-Source Models</h3>
 <p>A curated overview of publicly available Kraken/eScriptorium models for medieval and early modern manuscripts.</p>
 </a>
-
 <a href="content/models/htr-united/index.qmd" class="section-card">
-<div class="section-card-icon">🤝</div>
 <h3>HTR-United</h3>
 <p>The community initiative for sharing HTR training data and models under standardized metadata.</p>
 </a>
-
 <a href="content/modern-approaches/trocr/index.qmd" class="section-card">
-<div class="section-card-icon">🤖</div>
 <h3>TrOCR</h3>
 <p>Microsoft's transformer-based OCR model — architecture, pre-training, fine-tuning, and when to use it.</p>
 </a>
-
 <a href="content/modern-approaches/vlms/index.qmd" class="section-card">
-<div class="section-card-icon">👁️</div>
 <h3>Vision Language Models</h3>
 <p>GPT-4o, Gemini, and open VLMs applied to historical text recognition — possibilities and limitations.</p>
 </a>
-
 <a href="content/quiz/index.qmd" class="section-card">
-<div class="section-card-icon">🎯</div>
 <h3>Quiz</h3>
 <p>Test your knowledge with a Kahoot-style multiple-choice quiz covering all sections of this resource.</p>
 </a>
-
 <a href="content/literature/index.qmd" class="section-card">
-<div class="section-card-icon">📚</div>
 <h3>Literature</h3>
 <p>Key readings from the Zotero group <em>Automated Text Recognition</em>, searchable and organized by year.</p>
 </a>
-
 <a href="content/workshops/index.qmd" class="section-card">
-<div class="section-card-icon">🏛️</div>
 <h3>Workshops</h3>
 <p>Schedules and materials for hands-on ATR workshops. Next: DMSI 2026 Kalamazoo, 13 May 2026.</p>
 </a>
