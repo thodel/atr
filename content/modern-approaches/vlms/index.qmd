@@ -1,24 +1,258 @@
 ---
 title: "Vision Language Models"
-description: "Applying large multimodal models — GPT-4o, Gemini, Llama, and others — to historical text recognition."
+description: "Applying large multimodal models — GPT-4o, Gemini, Qwen, InternVL, and others — to historical text recognition."
 ---
 
 ## What are Vision Language Models?
 
 **Vision Language Models (VLMs)** are large neural networks that can process both images and text simultaneously, generating natural language responses to visual inputs. Unlike dedicated HTR models that output only transcribed text, VLMs can answer questions, describe content, extract structured information, and transcribe text — all from a single prompt-image pair.
 
-The most capable VLMs as of 2025 include:
+Current leading VLMs as of mid-2026:
 
-| Model | Provider | Access | Open weights |
-|---|---|---|---|
-| GPT-4o | OpenAI | API | No |
-| Gemini 1.5 Pro / 2.0 | Google | API | No |
-| Claude 3.5 Sonnet | Anthropic | API | No |
-| Llama 3.2 Vision | Meta | Open | Yes |
-| InternVL2 | Shanghai AI Lab | Open | Yes |
-| Qwen2.5-VL | Alibaba | Open | Yes |
-| Florence-2 | Microsoft | Open | Yes |
-| PaliGemma | Google | Open | Yes |
+| Model | Provider | Open weights | OCRBench | Context |
+|---|---|---|---|---|
+| [GPT-4o / GPT-4.1](#gpt-4o) | OpenAI | No | 736 | 128k |
+| [Gemini 2.5 Pro / Flash](#gemini-25) | Google | No | — | 1M tokens |
+| [Claude 3.5 / 3.7 Sonnet](#claude) | Anthropic | No | 788 | 200k |
+| [Qwen3-VL](#qwen3-vl) | Alibaba | Yes | — | 256k |
+| [Qwen2.5-VL](#qwen25-vl) | Alibaba | Yes | — | 128k |
+| [InternVL2 / InternVL2.5](#internvl) | Shanghai AI Lab | Yes | **839** | 8k |
+| [DeepSeek-VL2](#deepseek-vl2) | DeepSeek | Yes | 834 | — |
+| [Florence-2](#florence-2) | Microsoft | Yes | — | — |
+| [PaliGemma 2](#paligemma) | Google | Yes | — | — |
+
+OCRBench scores from published evaluations; higher = better on mixed OCR/scene-text tasks. Not all models have been evaluated on the same benchmark version.
+
+---
+
+## Key Models in Detail
+
+### GPT-4o and GPT-4.1 {#gpt-4o}
+
+::: {.model-card}
+#### GPT-4o / GPT-4.1
+
+OpenAI's flagship multimodal models. GPT-4o ("omni") natively processes images, audio, and text; GPT-4.1 (released April 2025) extends context to **1 million tokens** and improves instruction-following for document tasks.
+
+::: {.model-meta}
+[API only]{.model-badge}
+[OCRBench: 736]{.model-badge .metric}
+[128k context (4o) / 1M context (4.1)]{.model-badge}
+:::
+
+- **Docs:** [platform.openai.com/docs/models](https://platform.openai.com/docs/models)
+- **Vision guide:** [platform.openai.com/docs/guides/vision](https://platform.openai.com/docs/guides/vision)
+- Strong on clean Latin-script documents; weaker on medieval abbreviations and non-Latin scripts
+- GPT-4.1's million-token context window is useful for processing entire document collections in one call
+:::
+
+### Gemini 2.5 Pro and Flash {#gemini-25}
+
+::: {.model-card}
+#### Gemini 2.5 Pro / 2.5 Flash
+
+Google's current production-grade multimodal models (as of May 2026). **Gemini 2.5 Pro** is optimized for complex reasoning; **Gemini 2.5 Flash** offers the best price-to-performance ratio for high-volume tasks. Both support a **1 million token** context window, making them suited for long document sequences.
+
+::: {.model-meta}
+[API (Google AI / Vertex AI)]{.model-badge}
+[1M token context]{.model-badge}
+[Adaptive thinking]{.model-badge}
+:::
+
+- **API docs:** [ai.google.dev/gemini-api/docs/models](https://ai.google.dev/gemini-api/docs/models)
+- **Gemini 2.5 Pro (Vertex AI):** [cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-pro](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-pro)
+- **Gemini 2.5 Flash (Vertex AI):** [cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash)
+- **Gemini 2.0 Flash** remains the stable cost-effective option for lighter workloads: [cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-0-flash](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-0-flash)
+- Gemini 3.x (Pro, Flash) is available in preview as of mid-2026 via the AI Studio
+- The long context window makes Gemini particularly useful for whole-document workflows where you feed multiple pages simultaneously
+
+```python
+import google.generativeai as genai
+from PIL import Image
+
+genai.configure(api_key="YOUR_KEY")
+model = genai.GenerativeModel("gemini-2.5-flash")
+image = Image.open("manuscript_page.jpg")
+response = model.generate_content([
+    image,
+    "Transcribe all text exactly as written, preserving abbreviations."
+])
+print(response.text)
+```
+:::
+
+### Claude 3.5 / 3.7 Sonnet {#claude}
+
+::: {.model-card}
+#### Claude 3.5 Sonnet / Claude 3.7 Sonnet
+
+Anthropic's vision-capable models. Claude 3.5 Sonnet scored **788 on OCRBench**, competitive with GPT-4o. Claude 3.7 Sonnet (released February 2025) adds extended thinking for complex reasoning tasks.
+
+::: {.model-meta}
+[API only]{.model-badge}
+[OCRBench: 788]{.model-badge .metric}
+[200k context]{.model-badge}
+:::
+
+- **Docs:** [docs.anthropic.com/en/docs/about-claude/models](https://docs.anthropic.com/en/docs/about-claude/models)
+- **Vision guide:** [docs.anthropic.com/en/docs/build-with-claude/vision](https://docs.anthropic.com/en/docs/build-with-claude/vision)
+- Particularly good at following nuanced transcription instructions (e.g., "preserve the exact abbreviation marks, do not expand")
+:::
+
+### Qwen3-VL {#qwen3-vl}
+
+::: {.model-card}
+#### Qwen3-VL
+
+Alibaba's latest open-weight vision-language model (released in stages, Sept–Oct 2025). A major advance over Qwen2.5-VL with **256k native context**, 32-language OCR (up from 10), and explicit support for **rare and ancient characters** — directly relevant for historical documents.
+
+::: {.model-meta}
+[Open weights (Apache 2.0)]{.model-badge}
+[256k token context]{.model-badge}
+[32-language OCR]{.model-badge .lang}
+[2B / 4B / 8B / 32B / 235B]{.model-badge}
+:::
+
+- **Blog announcement:** [qwen.ai/blog — Qwen3-VL: Sharper Vision, Deeper Thought, Broader Action](https://qwen.ai/blog?id=99f0335c4ad9ff6153e517418d48535ab6d8afef)
+- **Technical report:** [arxiv.org/abs/2511.21631](https://arxiv.org/abs/2511.21631)
+- **Hugging Face collection:** [huggingface.co/collections/Qwen/qwen3-vl](https://huggingface.co/collections/Qwen/qwen3-vl)
+- **Transformers docs:** [huggingface.co/docs/transformers/model_doc/qwen3_vl](https://huggingface.co/docs/transformers/model_doc/qwen3_vl)
+- **vLLM usage guide:** [docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3-VL.html](https://docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3-VL.html)
+- Available in dense (2B–32B) and MoE (30B-A3B / 235B-A22B) variants
+- The explicit handling of "rare/ancient characters and jargon" and "long-document structure parsing" makes Qwen3-VL the most directly targeted open VLM for historical documents
+
+```python
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+from qwen_vl_utils import process_vision_info
+
+model = Qwen3VLForConditionalGeneration.from_pretrained(
+    "Qwen/Qwen3-VL-8B-Instruct", torch_dtype="auto", device_map="auto"
+)
+processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-8B-Instruct")
+```
+:::
+
+### Qwen2.5-VL {#qwen25-vl}
+
+::: {.model-card}
+#### Qwen2.5-VL
+
+The previous generation flagship from Alibaba (January 2025). Still widely used and well-benchmarked. Introduces a proprietary **QwenVL HTML format** that extracts layout as HTML — useful for structured document extraction.
+
+::: {.model-meta}
+[Open weights (Apache 2.0)]{.model-badge}
+[3B / 7B / 72B]{.model-badge}
+[German · French · Latin and more]{.model-badge .lang}
+:::
+
+- **Blog:** [qwenlm.github.io/blog/qwen2.5-vl/](https://qwenlm.github.io/blog/qwen2.5-vl/)
+- **Technical report:** [arxiv.org/abs/2502.13923](https://arxiv.org/abs/2502.13923)
+- **Transformers docs:** [huggingface.co/docs/transformers/model_doc/qwen2_5_vl](https://huggingface.co/docs/transformers/model_doc/qwen2_5_vl)
+- **72B Instruct model:** [huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct)
+- **7B Instruct model (lighter deployment):** [huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)
+- Dynamic resolution Vision Transformer with Window Attention reduces GPU memory requirements significantly
+- The 7B model outperforms GPT-4o-mini on multiple document benchmarks according to the Qwen team's evaluations
+:::
+
+### InternVL2 / InternVL2.5 {#internvl}
+
+::: {.model-card}
+#### InternVL2 / InternVL2.5
+
+From Shanghai AI Lab (CVPR 2024 oral). Currently the **highest-scoring open model on OCRBench** (839 for the 76B variant, beating Claude 3.5 Sonnet at 788). InternVL2.5 (Dec 2024) was the first open-source MLLM to exceed 70% on MMMU, matching GPT-4o.
+
+::: {.model-meta}
+[Open weights (MIT / InternVL)]{.model-badge}
+[OCRBench: 839 (76B)]{.model-badge .metric}
+[DocVQA: 94.1]{.model-badge .metric}
+[1B to 108B]{.model-badge}
+:::
+
+- **GitHub:** [github.com/OpenGVLab/InternVL](https://github.com/OpenGVLab/InternVL)
+- **Documentation:** [internvl.readthedocs.io](https://internvl.readthedocs.io/)
+- **InternVL2.5 blog:** [internvl.github.io/blog/2024-12-05-InternVL-2.5](https://internvl.github.io/blog/2024-12-05-InternVL-2.5/)
+- **InternVL3 paper (2025):** [arxiv.org/abs/2504.10479](https://arxiv.org/abs/2504.10479)
+- **Hugging Face (8B):** [huggingface.co/OpenGVLab/InternVL2-8B](https://huggingface.co/OpenGVLab/InternVL2-8B)
+- Excellent on "document and chart comprehension," "scene text understanding," and "infographics QA"
+- The 8B variant is a practical choice for self-hosted deployment on a single GPU
+:::
+
+### DeepSeek-VL2 {#deepseek-vl2}
+
+::: {.model-card}
+#### DeepSeek-VL2
+
+A strong open-weight contender from DeepSeek with **OCRBench score of 834** and **93.3% on DocVQA** (edging past GPT-4o's 92.8%). Uses a sparse Mixture-of-Experts architecture for efficiency.
+
+::: {.model-meta}
+[Open weights]{.model-badge}
+[OCRBench: 834]{.model-badge .metric}
+[DocVQA: 93.3%]{.model-badge .metric}
+[MoE architecture]{.model-badge}
+:::
+
+- **GitHub:** [github.com/deepseek-ai/DeepSeek-VL2](https://github.com/deepseek-ai/DeepSeek-VL2)
+- **Hugging Face:** [huggingface.co/deepseek-ai/deepseek-vl2](https://huggingface.co/deepseek-ai/deepseek-vl2)
+- Best balance of OCR performance and inference efficiency among open models
+:::
+
+### Florence-2 {#florence-2}
+
+::: {.model-card}
+#### Florence-2
+
+Microsoft's unified vision foundation model (CVPR 2024). Uses a prompt-based interface for a wide range of vision tasks including OCR, captioning, object detection, and segmentation — all in one compact model (0.23B / 0.77B).
+
+::: {.model-meta}
+[Open weights (MIT)]{.model-badge}
+[TextVQA: 81.5%]{.model-badge .metric}
+[0.23B / 0.77B]{.model-badge}
+:::
+
+- **Hugging Face (large):** [huggingface.co/microsoft/Florence-2-large](https://huggingface.co/microsoft/Florence-2-large)
+- **Paper (CVPR 2024):** [arxiv.org/abs/2311.06242](https://arxiv.org/abs/2311.06242)
+- **OCR tutorial:** [blog.roboflow.com/florence-2-ocr/](https://blog.roboflow.com/florence-2-ocr/)
+- Extremely lightweight — runs on CPU or low-end GPU; ideal for rapid prototyping without API costs
+- Prompt `<OCR>` for raw text extraction; `<OCR_WITH_REGION>` for bounding-box-aligned output
+
+```python
+from transformers import AutoProcessor, AutoModelForCausalLM
+from PIL import Image
+
+model = AutoModelForCausalLM.from_pretrained(
+    "microsoft/Florence-2-large", trust_remote_code=True
+)
+processor = AutoProcessor.from_pretrained(
+    "microsoft/Florence-2-large", trust_remote_code=True
+)
+image = Image.open("line.jpg")
+inputs = processor(text="<OCR>", images=image, return_tensors="pt")
+generated_ids = model.generate(**inputs, max_new_tokens=1024)
+text = processor.post_process_generation(
+    processor.batch_decode(generated_ids)[0], task="<OCR>"
+)
+```
+:::
+
+### PaliGemma 2 {#paligemma}
+
+::: {.model-card}
+#### PaliGemma 2
+
+Google's open vision-language model optimized for **fine-tuning on specific tasks** rather than zero-shot use. PaliGemma 2 (released Dec 2024) is available in 3B, 10B, and 28B variants.
+
+::: {.model-meta}
+[Open weights (Gemma license)]{.model-badge}
+[3B / 10B / 28B]{.model-badge}
+[Fine-tuning optimized]{.model-badge}
+:::
+
+- **Hugging Face collection:** [huggingface.co/collections/google/paligemma-2](https://huggingface.co/collections/google/paligemma-2)
+- **Blog:** [ai.google.dev/gemma/docs/paligemma](https://ai.google.dev/gemma/docs/paligemma)
+- Unlike the larger Gemini models, PaliGemma 2 is explicitly designed to be fine-tuned on domain-specific image-text pairs — making it potentially interesting for manuscript-specific HTR fine-tuning in a VLM framework
+:::
+
+---
 
 ## VLMs for Text Recognition: The Basic Approach
 
@@ -62,6 +296,7 @@ A capable VLM can handle any script, language, or document type without any trai
 ### Multimodal reasoning
 
 VLMs can combine transcription with interpretation. You can ask a VLM to:
+
 - Transcribe *and* identify abbreviations
 - Extract named entities (persons, places, dates) directly from an image
 - Describe the layout and structure of a page
@@ -69,11 +304,15 @@ VLMs can combine transcription with interpretation. You can ask a VLM to:
 
 ### Handling complex layouts
 
-VLMs handle multi-column layouts, marginalia, tables, and mixed scripts more gracefully than pipeline-based systems that require explicit segmentation.
+VLMs handle multi-column layouts, marginalia, tables, and mixed scripts more gracefully than pipeline-based systems that require explicit segmentation. Models like Qwen2.5-VL and Qwen3-VL can output the entire layout structure as HTML.
 
 ### Iterative refinement via prompting
 
 If the initial transcription contains errors, you can provide feedback in a follow-up prompt: "The third word looks more like 'dicto' than 'dico' — please revise." This interactive refinement is unique to VLMs.
+
+### Long-context document processing
+
+Models like Gemini 2.5 (1M tokens) and Qwen3-VL (256k tokens) can process dozens of pages in a single call, enabling whole-document reasoning that is not possible with line-level HTR models.
 
 ## Limitations for Historical Documents
 
@@ -89,27 +328,34 @@ Language model components can "fill in" text that is not actually visible, espec
 
 ### Script coverage
 
-Most VLMs are trained predominantly on Latin-script modern text. Performance on non-Latin scripts (Hebrew, Arabic, Greek, etc.), unusual historical scripts, and heavily abbreviated Latin is substantially lower.
+Most VLMs are trained predominantly on Latin-script modern text. Performance on non-Latin scripts (Hebrew, Arabic, Greek, etc.), unusual historical scripts, and heavily abbreviated Latin is substantially lower. **Qwen3-VL** explicitly addresses this with 32-language OCR and ancient character support, but even so, dedicated models typically outperform VLMs when training data is available.
 
 ### Cost at scale
 
-Processing an entire archival collection of 100,000 pages via a commercial VLM API is expensive. Cost per page varies by provider and image size, but even $0.01/page yields $1,000 for 100k pages — before any correction costs.
+Processing an entire archival collection of 100,000 pages via a commercial VLM API is expensive. Cost per page varies by provider and image size, but even $0.01/page yields $1,000 for 100k pages — before any correction costs. Open-weight models (Qwen3-VL, InternVL2, Florence-2) eliminate this cost if GPU infrastructure is available.
 
-### No fine-tuning for most APIs
+### No fine-tuning for most commercial APIs
 
-Commercial VLM APIs (GPT-4o, Claude, Gemini) do not allow fine-tuning on custom manuscript data. Open models (Llama, InternVL, Qwen) can be fine-tuned, but require substantial GPU resources.
+Commercial VLM APIs (GPT-4o, Claude, Gemini) do not allow fine-tuning on custom manuscript data. Open models (Qwen, InternVL, PaliGemma 2) can be fine-tuned, but require substantial GPU resources.
 
 ### GDPR and data sovereignty
 
-Sending archival images to external commercial APIs raises legal and ethical questions about unpublished or restricted material.
+Sending archival images to external commercial APIs raises legal and ethical questions about unpublished or restricted material. Self-hosted open models (Florence-2, InternVL2, Qwen3-VL) resolve this.
 
 ## Benchmark Evidence
 
-Several studies have evaluated VLMs against dedicated HTR systems on historical manuscripts. The general pattern as of 2025:
+Standardized OCR benchmark scores for the current generation (OCRBench, a mixed scene-text + document OCR benchmark):
 
-- **GPT-4o, Gemini 1.5 Pro** achieve competitive results (~5–15% CER) on clean, legible 19th-century printed or semi-printed historical material, but degrade substantially on medieval scripts.
-- **Dedicated fine-tuned models** (CATMuS, TRIDIS, TrOCR) consistently outperform VLMs on historical handwriting when sufficient training data is available.
-- **VLMs outperform dedicated models** in zero-shot scenarios on very low-resource scripts or hands with no available training data.
+| Model | OCRBench | DocVQA |
+|---|---|---|
+| InternVL2-76B | **839** | 94.1% |
+| DeepSeek-VL2 | 834 | 93.3% |
+| Claude 3.5 Sonnet | 788 | — |
+| GPT-4o | 736 | 92.8% |
+
+::: {.tip-box}
+**OCRBench ≠ historical HTR performance.** These benchmarks measure modern document OCR and scene text recognition. On medieval handwriting specifically, dedicated fine-tuned models (CATMuS, TRIDIS, TrOCR) consistently outperform all VLMs when sufficient training data is available.
+:::
 
 The crossover point — where training data makes dedicated models preferable — is approximately **50–200 ground-truth pages**, depending on script complexity.
 
@@ -117,12 +363,14 @@ The crossover point — where training data makes dedicated models preferable �
 
 | Scenario | Recommended approach |
 |---|---|
-| Unknown script, no training data | VLM zero-shot as first step |
+| Unknown script, no training data | VLM zero-shot — try Qwen3-VL 8B or Gemini 2.5 Flash |
 | 50+ pages of ground truth available | Fine-tune CATMuS/TrOCR; use VLM for comparison |
-| Complex multimodal extraction (entities, structure) | VLM with structured output prompting |
+| Complex multimodal extraction (entities, structure) | Gemini 2.5 Pro or GPT-4.1 with structured output prompting |
 | Large-scale archival digitization | Dedicated model (cost, consistency, speed) |
-| Rapid prototype / exploration | VLM for speed; replace with trained model at scale |
+| Rapid prototype / exploration | Florence-2 (free, local, fast) |
 | Non-Latin script, community model exists | Use specialized model (BiblIA, MiDRASH, etc.) |
+| Data sovereignty required | Self-hosted open model (Qwen3-VL, InternVL2, Florence-2) |
+| Ancient/rare characters, no training data | Qwen3-VL (explicitly designed for this) |
 
 ## Emerging Approaches: VLM + HTR Hybrid
 
@@ -137,20 +385,34 @@ This keeps costs low while leveraging VLM strength on genuinely difficult cases.
 
 ## Open VLMs for Self-Hosted Deployment
 
-For projects with data sovereignty requirements, open-weight VLMs can run on local GPU infrastructure:
+For projects with data sovereignty requirements, open-weight VLMs can run on local GPU infrastructure. Practical options ranked by resource requirement:
+
+| Model | Min. VRAM | Notes |
+|---|---|---|
+| Florence-2-large (0.77B) | ~2 GB | CPU-runnable; rapid prototyping |
+| Qwen3-VL-2B / 4B | 4–8 GB | Good ancient character support |
+| InternVL2-8B | 16 GB | Highest OCRBench open model at this size |
+| Qwen2.5-VL-7B | 16 GB | Strong document layout extraction |
+| Qwen3-VL-8B | 16 GB | Best current open option for historical scripts |
+| Qwen2.5-VL-72B / InternVL2-76B | 80+ GB (multi-GPU) | Maximum open-source quality |
 
 ```bash
-# Example: Llama 3.2 Vision via Ollama
-ollama run llama3.2-vision
-# Then query via HTTP API with base64-encoded image
-```
+# Qwen3-VL via Ollama (once supported)
+ollama run qwen3-vl:8b
 
-**InternVL2** and **Qwen2.5-VL** have shown particularly strong multilingual and OCR performance in open-source evaluations and are worth testing for historical document tasks.
+# Florence-2 via Python (CPU, no GPU required)
+pip install transformers timm einops
+
+# InternVL2 via vLLM
+vllm serve OpenGVLab/InternVL2-8B --trust-remote-code
+```
 
 ## Key References
 
-- Fujii, Y. et al. (2024). *Evaluation of Large Language Models for Historical Document Recognition*. arXiv preprint.
-- Rombach, R. et al. (2024). Benchmarking multimodal models on handwriting recognition. *ICDAR 2024*.
-- OpenAI (2024). GPT-4 Technical Report. <https://openai.com/research/gpt-4>
-- Anthropic (2024). Claude 3 Model Card. <https://www.anthropic.com/claude>
-- Meta (2024). Llama 3 Vision: Open foundation and fine-tuned chat models. <https://ai.meta.com/llama/>
+- Li, M. et al. (2023). TrOCR: Transformer-based optical character recognition with pre-trained models. *AAAI 2023*. [arXiv:2109.10282](https://arxiv.org/abs/2109.10282)
+- Chen, Z. et al. (2024). InternVL: Scaling up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks. *CVPR 2024*. [arXiv:2312.14238](https://arxiv.org/abs/2312.14238)
+- Xiao, B. et al. (2024). Florence-2: Advancing a Unified Representation for a Variety of Vision Tasks. *CVPR 2024*. [arxiv.org/abs/2311.06242](https://arxiv.org/abs/2311.06242)
+- Qwen Team (2025). Qwen2.5-VL Technical Report. [arxiv.org/abs/2502.13923](https://arxiv.org/abs/2502.13923)
+- Qwen Team (2025). Qwen3-VL Technical Report. [arxiv.org/abs/2511.21631](https://arxiv.org/abs/2511.21631)
+- Google (2026). Gemini 2.5 model documentation. [ai.google.dev/gemini-api/docs/models](https://ai.google.dev/gemini-api/docs/models)
+- OpenAI (2024). GPT-4 Technical Report. [openai.com/research/gpt-4](https://openai.com/research/gpt-4)
