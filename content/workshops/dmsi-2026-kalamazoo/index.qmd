@@ -26,6 +26,8 @@ This workshop offers a hands-on introduction to Automated Text Recognition (ATR)
 
 No prior technical experience is assumed. Participants are encouraged to bring their own scanned manuscript images for the afternoon session.
 
+[Link to the slides](KZoo_TextRecognition_2026.pdf)
+
 ---
 
 ## Session 1 — Morning {#session-1}

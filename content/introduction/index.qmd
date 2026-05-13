@@ -22,7 +22,7 @@ A standard ATR pipeline consists of four sequential stages:
 
 ### 1. Image Acquisition
 
-The source material — a manuscript, a printed book, an archival document — is digitized, usually via flatbed scanner or overhead camera. Image quality (resolution, lighting, color depth) directly affects downstream recognition quality. A minimum of 300 DPI is recommended; 400–600 DPI is preferred for manuscripts with fine strokes.
+The source material — a manuscript, a printed book, an archival document — is digitized, usually via flatbed scanner or overhead camera. Image quality (resolution, lighting, color depth) directly affects downstream recognition quality. A minimum of 300 DPI is recommended (400–600 DPI is only preferred for manuscripts with fine strokes, e.g., barely legible pencil).
 
 ### 2. Layout Analysis (Segmentation)
 
@@ -48,7 +48,7 @@ Newer approaches — such as [TrOCR](../modern-approaches/trocr/index.qmd) and [
 
 Raw recognition output is rarely used directly. Common post-processing steps include:
 
-- **Spell checking / language model correction** — using n-gram or neural language models to correct likely misrecognitions
+- **Spell checking / language model correction** — using n-gram or neural language models to correct or flag likely misrecognitions
 - **Named entity recognition** — extracting persons, places, and dates from the recognized text
 - **Manual correction** — human review in platforms like eScriptorium or Transkribus
 
@@ -85,9 +85,9 @@ Historical documents present a cluster of challenges not found in modern documen
 | **Layout complexity** | Marginalia, interlinear additions, rubrics, columns, tables |
 | **Low-resource languages** | Many historical languages have limited digitized text for language model support |
 
-## Transcription Policies
+## Transcription Guidelines
 
-Before training any model, a project must define its **transcription policy** — the rules governing how text is encoded. Key choices include:
+Before training any model, a project must define its **transcription guidelines** — the rules governing how text is encoded. Key choices include:
 
 - **Diplomatic** — strict character-by-character rendering of what is visible, including abbreviations unexpanded
 - **Graphematic** — faithful to the graphic forms of characters but normalized at the Unicode level (e.g., using NFD decomposition)
@@ -103,13 +103,10 @@ Two dominant platforms serve the research community today:
 | Platform | License | Engine | Key strength |
 |---|---|---|---|
 | **eScriptorium** | Open source (MIT) | Kraken | Full transparency, reproducibility, open models |
-| **Transkribus** | Freemium / commercial | PyLaia / custom | Mature ecosystem, large community, many pre-trained models |
+| **Transkribus** | Freemium / commercial | PyLaia / TrOCR | Mature ecosystem, large community, many pre-trained models |
 
 This resource focuses on the open-source stack — [eScriptorium](../escriptorium/index.qmd) and [Kraken](https://kraken.re/) — with dedicated sections on [open-source models](../models/open-source/index.qmd), [HTR-United](../models/htr-united/index.qmd), and modern approaches.
 
 ## Further Reading
 
-- Mühlberger, G. et al. (2019). Transforming scholarship in the archives through handwritten text recognition. *Journal of Documentation*, 75(5).
-- Springmann, U., & Lüdeling, A. (2017). OCR of historical printings with an application to building diachronic corpora. *arXiv:1703.09550*.
-- Kiessling, B. et al. (2019). BADAM: A public dataset for baseline detection in Arabic-script manuscripts. *ICDAR*.
 - See the full [Literature](../literature/index.qmd) section for a searchable bibliography.
