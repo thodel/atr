@@ -4,22 +4,24 @@ description: "Key readings from the Zotero group Automated Text Recognition, sea
 toc: false
 ---
 
-## Forthcoming
+## The Book
 
 ::: {.model-card}
-#### Schönhardt et al. — Automated Text Recognition for Historical Documents
+#### Automated Text Recognition: Theory, Platforms, Best-Practices
 
-An introduction to ATR for historians and philologists, covering the full workflow from image acquisition through ground-truth annotation, model training, and output evaluation. Presents practical guidance for humanities researchers engaging with eScriptorium, Kraken, and related tools.
+Michael Schonhardt, Tim Geelhaar, Tobias Hodel, Jan Odstrčilík. *Digital Humanities Research.* Bielefeld University Press, 2026.
 
 ::: {.model-meta}
-[Forthcoming · DHR]{.model-badge}
+[doi:10.64136/nrlj5339](https://doi.org/10.64136/nrlj5339){.model-badge}
 [CC BY 4.0]{.model-badge}
-[Author proof, April 2026]{.model-badge}
+[ISBN 978-3-69129-041-7]{.model-badge}
+[Open Access]{.model-badge}
 :::
 
-[Download preprint (PDF)](../resources/schonhardt-et-al-atr.pdf){.hero-cta .hero-cta-secondary}
+The authoritative book-length treatment of ATR for humanities scholars — covering theory, platforms (eScriptorium, Transkribus), key concepts, and case studies. Companion to the teaching materials on this site.
 
-*Full citation details will be added upon publication.*
+[Read open access →](https://doi.org/10.64136/nrlj5339){.hero-cta .hero-cta-primary}
+[Download PDF](../resources/schonhardt-et-al-atr.pdf){.hero-cta .hero-cta-secondary}
 :::
 
 ---

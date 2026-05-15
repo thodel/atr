@@ -55,3 +55,26 @@ A teaching resource on OCR and HTR for historical documents — from classical p
 <p>Schedules and materials for hands-on ATR workshops. Next: DMSI 2026 Kalamazoo, 13 May 2026.</p>
 </a>
 :::
+
+---
+
+## The Book
+
+::: {.book-promo}
+[![Cover of Automated Text Recognition: Theory, Platforms, Best-Practices](images/atr-book-cover.png){.book-cover}](https://doi.org/10.64136/nrlj5339)
+
+::: {.book-info}
+### Automated Text Recognition: Theory, Platforms, Best-Practices
+
+**Michael Schonhardt, Tim Geelhaar, Tobias Hodel, Jan Odstrčilík**
+
+*Digital Humanities Research.* Bielefeld University Press, 2026.
+ISBN 978-3-69129-041-7 · [doi:10.64136/nrlj5339](https://doi.org/10.64136/nrlj5339)
+
+The diverse landscape of platforms and recognition systems in the field of Automated Text Recognition (ATR) offers significant opportunities for the digital analysis and exploitation of handwritten sources. At the same time, in this complex and rapidly evolving field, established concepts of text processing and analysis quickly reach their limits.
+
+This book provides scholars in the humanities with guidance by presenting technologies, platforms, key concepts, and case studies. It helps readers develop algorithmic literacy, enabling them to carry out both small- and large-scale projects using current technologies, as well as to engage with future developments in the field of ATR.
+
+[Read open access →](https://doi.org/10.64136/nrlj5339){.hero-cta .hero-cta-primary}
+:::
+:::

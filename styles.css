@@ -286,3 +286,43 @@
   border-color: var(--bs-primary, #1a5276);
   box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.12);
 }
+
+/* Book promo block (homepage) */
+.book-promo {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin: 1.5rem 0;
+}
+
+.book-cover {
+  width: 180px;
+  min-width: 180px;
+  border-radius: 4px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+}
+
+.book-cover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+}
+
+.book-info {
+  flex: 1;
+}
+
+.book-info h3 {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .book-promo {
+    flex-direction: column;
+  }
+  .book-cover {
+    width: 140px;
+    min-width: 140px;
+  }
+}
